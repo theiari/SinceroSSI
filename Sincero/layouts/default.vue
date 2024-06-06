@@ -1,22 +1,21 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <header class="bg-white shadow-lg">
-      <div class="container mx-auto px-6 py-4 flex justify-between items-center">  
-
-           <!-- <NuxtImg src="../logo.png"/> -->
-           
-           <NuxtLink to="/" class="text-gray-600 hover:text-blue-600 transition duration-300"></NuxtLink>
-        <nav class="flex-grow">
-          <ul class="flex space-x-8 text-lg font-medium justify-start"> 
-            <!-- <li><NuxtLink tag="img" src="../logo.svg "to="/" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</NuxtLink></li> -->
-            
-            <img src="../logo.svg" style="width: 8%;">
-            <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
-            <li><NuxtLink to="/products" class="text-gray-600 hover:text-blue-600 transition duration-300">Products</NuxtLink></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+  <div class="container mx-auto px-6 py-2 flex justify-between items-center">  
+    <NuxtLink to="/" class="flex items-center">
+      <!-- Adjust the image size and move it a bit to the left -->
+      <img src="../logo.svg" class="w-24 mr-4">
+    </NuxtLink>
+    <nav class="flex-grow">
+      <ul class="flex space-x-8 text-lg font-medium justify-start">
+        <!-- Remove flex items-center class from NuxtLink wrapping the image -->
+        <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
+        <li><NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink></li>
+        <li><NuxtLink to="/login" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</NuxtLink></li>
+      </ul>
+    </nav>
+  </div>
+</header>
     
     <main class="flex-grow bg-gray-50">
       <slot />
