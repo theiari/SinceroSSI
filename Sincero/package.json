@@ -12,8 +12,13 @@
   "dependencies": {
     "@nuxt/image": "^1.7.0",
     "@vueuse/core": "^10.10.0",
+    "base64-js": "^1.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "crypto": "^1.0.1",
+    "did-jwt": "^8.0.4",
+    "did-resolver": "^4.1.0",
+    "ethr-did-resolver": "^10.1.9",
     "lucide-vue-next": "^0.383.0",
     "nuxt": "^3.11.2",
     "radix-vue": "^1.8.3",
@@ -21,6 +26,8 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2"
   },

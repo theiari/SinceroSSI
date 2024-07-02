@@ -3,7 +3,7 @@
   <main class="flex-grow">
    <section
     class="bg-cover bg-center h-screen"
-    style="background-image: url('https://source.unsplash.com/random/1600x900')"
+    style="background-image: url('https://picsum.photos/1600')"
    >
     <div class="container mx-auto h-full flex items-center justify-center">
      <div class="text-center text-white drop-shadow-lg animate-fade-in">
@@ -16,7 +16,7 @@
       <button
        class="mt-8 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full hover:bg-blue-500 transition duration-300 transform hover:scale-105"
       >
-       <NuxtLink to="/about">Learn more</NuxtLink>
+       <NuxtLink to="/generate">Generate personal DID</NuxtLink>
       </button>
      </div>
     </div>
@@ -26,5 +26,27 @@
 </template>
 
 <script setup>
+// import { ES256KSigner, createJWT, hexToBytes, decodeJWT, verifyJWT  } from 'did-jwt';
 
+// // ethrResolver = ethr.getResolver();
+// const signer = ES256KSigner(hexToBytes('278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'));
+
+// (async () => {
+//   try {
+//     const jwt = await createJWT(
+//       { aud: 'did:ethr:0xf3beac30c498d9e26865f34fcaa57dbb935b0d74', iat: undefined, name: 'uPort Developer' },
+//       { issuer: 'did:ethr:0xf3beac30c498d9e26865f34fcaa57dbb935b0d74', signer },
+//       { alg: 'ES256K' }
+//     );
+//     console.log('This is the jwt: ',jwt);
+//     let decoded = decodeJWT(jwt);
+//     console.log('And this is the decoded JWT: ',decoded);
+    
+//     //TODO add jwt verification
+//     // const resolver = new Resolver({...});
+//     // verifyJWT(jwt, { resolver }).then(console.log).catch(console.error);
+//   } catch (error) {
+//     console.error('Error creating JWT:', error);
+//   }
+// })();
 </script>

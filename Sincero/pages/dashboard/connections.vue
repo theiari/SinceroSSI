@@ -58,20 +58,20 @@
     </Dialog>
     
     <DropdownMenu class="mx-2 flex items-end">
-     <DropdownMenuTrigger as-child>
+    <DropdownMenuTrigger as-child>
       <Button variant="outline">
-       25
-       <Icon name="ant-design:down-outlined" />
+        {{ selectedValue }}
+        <Icon name="ant-design:down-outlined" />
       </Button>
-     </DropdownMenuTrigger>
-     <DropdownMenuContent class="w-18">
-      <DropdownMenuRadioGroup v-model="position">
-       <DropdownMenuRadioItem value="top"> 10 </DropdownMenuRadioItem>
-       <DropdownMenuRadioItem value="bottom"> 25 </DropdownMenuRadioItem>
-       <DropdownMenuRadioItem value="right"> 100 </DropdownMenuRadioItem>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent class="w-18">
+      <DropdownMenuRadioGroup v-model="selectedValue">
+        <DropdownMenuRadioItem value="5">5</DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="10">10</DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="30">30</DropdownMenuRadioItem>
       </DropdownMenuRadioGroup>
-     </DropdownMenuContent>
-    </DropdownMenu>
+    </DropdownMenuContent>
+  </DropdownMenu>
    </div>
 
    <form class="flex items-end">
@@ -97,7 +97,7 @@
    ></div>
   </div>
 
-  <div class="relative h-64 overflow-auto">
+  <div :class="['relative', 'overflow-auto']" style="max-height:300px">
    <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-400">
     <thead class="text-xs text-gray-900 uppercase bg-gray-800 dark:bg-gray-900 dark:text-gray-800 sticky top-0">
      <tr>
@@ -110,7 +110,7 @@
     <tbody v-for="p in products">
      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-       {{ p.title }}
+       <div class="truncate" style="max-width: 200px;">{{ p.title }}</div>
       </th>
       <td class="px-6 py-4">{{ p.category }}</td>
       <td class="px-6 py-4">{{ p.category }}</td>
@@ -230,7 +230,14 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useToast } from '@/components/ui/toast/use-toast'
 
-const { toast } = useToast()
+let selectedValue:any = ref('5');
+// function divideSelected(){
+//   return (parseInt(selectedValue) + 5) + 'px';
+// }
+const { toast } = useToast();
+
+
+
 </script>
 
 <style></style>

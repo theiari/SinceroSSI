@@ -12,6 +12,7 @@
         <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
         <li><NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink></li>
         <li><NuxtLink to="/login" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</NuxtLink></li>
+        <li><NuxtLink to="/generate" class="text-gray-600 hover:text-blue-600 transition duration-300">Generate</NuxtLink></li>
       </ul>
     </nav>
   </div>
