@@ -47,7 +47,7 @@
   </template>
   
   <script>
-  const temp = await $fetch('/api/test');
+  
   
 function encodeHex(array) {
     return Array.from(array)
@@ -69,7 +69,7 @@ function decodeHex(hexString) {
     return byteArray;
 }
 
-  console.log(temp.hello);
+  
   import tweetnacl from 'tweetnacl';
   import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
   import { createJWT, EdDSASigner, decodeJWT } from 'did-jwt';
@@ -80,7 +80,7 @@ function decodeHex(hexString) {
         inputPublicKey: '',
         did: null,
         jwt: null,
-        data: temp,
+        data: null,
         decoded: null,
         payload64: null,
         signature64: null,

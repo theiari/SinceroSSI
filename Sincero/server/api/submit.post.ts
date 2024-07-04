@@ -1,5 +1,7 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  console.log("Received body:", body);
-  return body;
+
+  console.log("process env:", process.env.NODE_ENV);
+  // return body;
+  return { message: "Received body: "+body};
 })

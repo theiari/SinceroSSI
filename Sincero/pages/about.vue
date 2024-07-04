@@ -3,7 +3,7 @@
     <h1>Nuxt 3 DID JWT Integration</h1>
     <button @click="createJwt">Create JWT</button>
     <p></p>
-    <button @click="numberPOST">Return Number </button>
+    <button @click="numberPOST()">Return Number </button>
     <p v-if="jwt">JWT: {{ jwt }}</p>
     <p v-if="error" style="color: red;">Error: {{ error }}</p>
   </div>
@@ -12,7 +12,7 @@
 <script setup>
 import { ref } from 'vue';
 
-const jwt = ref('');
+let jwt = ref('');
 const error = ref('');
 
 async function createJwt() {
@@ -20,7 +20,7 @@ async function createJwt() {
     const data = await $fetch('/api/create-jwt', {
       method: 'POST',
       body: {
-        privateKey: 123123 // Replace with actual private key
+        privateKey: "thisIsARealSecretLikeForRealDude" // Replace with actual private key
       }
     });
 
@@ -35,14 +35,16 @@ async function createJwt() {
 
 
 async function numberPOST() {
-  console.log("clicked!");
-  const response = await $fetch('/api/submit', {
-    method: 'post',
-    body: JSON.stringify({ test: 123 }), // Ensure this object is properly formatted
+  console.log("clicked the post");
+  const data = await $fetch('/api/submit', {
+    method: 'POST',
+    body: 123,
       headers: {
         'Content-Type': 'application/json'
-      }
-  })
+      },
+  }).then((res) => {
+    console.log(res);
+  });
 }
 
 async function returnNumberGET() {

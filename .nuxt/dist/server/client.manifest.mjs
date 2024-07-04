@@ -1,0 +1,1 @@
+export { default } from "file:///C:/Users/anton/OneDrive/Documenti/GARR/Hyperledger%20Aries/WebApp/SinceroSSI/node_modules/@nuxt/vite-builder/dist/runtime/client.manifest.mjs"

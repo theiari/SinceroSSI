@@ -1,10 +1,11 @@
 <template>
+    
  <div class="bg-gray-100 min-h-screen flex flex-col">
   <main class="flex-grow">
    <section
     class="bg-cover bg-center h-screen"
-    style="background-image: url('https://picsum.photos/1600')"
-   >
+    style="background-color: seagreen">
+   
     <div class="container mx-auto h-full flex items-center justify-center">
      <div class="text-center text-white drop-shadow-lg animate-fade-in">
       <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight">
