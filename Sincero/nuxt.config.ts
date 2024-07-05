@@ -1,5 +1,4 @@
 export default defineNuxtConfig({
-  
   modules: [
     '@nuxtjs/tailwindcss',
     "@nuxt/image",
@@ -7,27 +6,12 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "nuxt-security",
     "@sidebase/nuxt-auth",
-    '@sidebase/nuxt-auth',
   ],
-  
-  
+
   vite: {
     plugins: [
       require('dotenv').config()
     ]
-  },
-
-
-  routeRules: {
-    // Generated at build time for SEO purpose
-    '/': { prerender: true },
-    // Cached for 1 hour
-    '/api/*': { cache: { maxAge: 60 * 60 } },
-    // Redirection to avoid 404
-    '/old-page': {
-      redirect: { to: '/new-page', statusCode: 302 }
-    }
-    // ...
   },
 
   auth: {
@@ -48,4 +32,6 @@ export default defineNuxtConfig({
     githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
     }
   },
+
+  compatibilityDate: '2024-07-05',
 })
