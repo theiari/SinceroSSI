@@ -7,17 +7,19 @@
      <img src="../logo.svg" class="w-24 mr-4" />
     </NuxtLink>
     <nav class="flex-grow">
-     <ul class="flex space-x-8 text-lg font-medium justify-start">
-      <!-- Remove flex items-center class from NuxtLink wrapping the image -->
+     <ul class="flex space-x-5 text-lg font-medium items-center">
+      <!-- Navigation links -->
       <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
-      <li>
-       <NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink>
-      </li>
-      <li><NuxtLink to="/login" class="text-gray-600 hover:text-blue-600 transition duration-300">Login</NuxtLink></li>
+      <li><NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink></li>
       <li><NuxtLink to="/generate" class="text-gray-600 hover:text-blue-600 transition duration-300">Generate</NuxtLink></li>
-
-     </ul>
+      <li><NuxtLink @click="signMessage" class="text-gray-600 hover:text-blue-600 transition duration-300">Sign DEBUG</NuxtLink></li> 
+    </ul>
     </nav>
+    <div class="flex items-center space-x-4">
+     <div v-if="account">
+      <b>Connected as:  </b> {{ account }}
+     </div>
+     </div>
    </div>
   </header>
   <div class="flex flex-grow">
@@ -87,6 +89,5 @@
 </style>
 
 <script setup>
-import image from "~/logo.svg";
-import { Label } from "@/components/ui/label";
+
 </script>

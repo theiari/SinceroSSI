@@ -1,11 +1,7 @@
 <template>
-    
  <div class="bg-gray-100 min-h-screen flex flex-col">
   <main class="flex-grow">
-   <section
-    class="bg-cover bg-center h-screen"
-    style="background-color: seagreen">
-   
+   <section class="bg-cover bg-center h-screen" style="background-color: seagreen">
     <div class="container mx-auto h-full flex items-center justify-center">
      <div class="text-center text-white drop-shadow-lg animate-fade-in">
       <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight">
@@ -19,6 +15,14 @@
       >
        <NuxtLink to="/generate">Generate personal DID</NuxtLink>
       </button>
+
+      <p></p> DEBUG
+      <p></p>
+      <button>
+       <NuxtLink @click="setLocalStorage(1, 1)">Set Local Storage</NuxtLink>
+      </button>
+      <p></p>
+      <button><NuxtLink @click="getLocalStorage(1)">Get Local Storage</NuxtLink></button>
      </div>
     </div>
    </section>
@@ -27,4 +31,13 @@
 </template>
 
 <script setup>
+function setLocalStorage(key, value) {
+    console.log(key, value, "clicked!");
+
+ localStorage.setItem(temp, value);
+}
+function getLocalStorage(key) {
+    console.log(localStorage.getItem(key), "clicked!")
+ return localStorage.getItem(key+1);
+}
 </script>

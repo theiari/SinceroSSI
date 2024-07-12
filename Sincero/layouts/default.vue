@@ -76,25 +76,25 @@
   }
  }
  
- async function isConnected() {
-  try {
-   const accounts = await ethereum
-    .request({ method: "eth_requestAccounts" })
-    // .then(handleAccountsChanged)
-    .catch((err) => {
-     // Some unexpected error.
-     // For backwards compatibility reasons, if no accounts are available, eth_accounts returns an
-     // empty array.
-     console.error(err);
-    });
-   if (accounts[0].length > 0) {
-    return true;
-   } else return false;
-  } catch (error) {
-   console.error(error);
-   return false;
-  }
- }
+//  async function isConnected() {
+//   try {
+//    const accounts = await ethereum
+//     .request({ method: "eth_requestAccounts" })
+//     // .then(handleAccountsChanged)
+//     .catch((err) => {
+//      // Some unexpected error.
+//      // For backwards compatibility reasons, if no accounts are available, eth_accounts returns an
+//      // empty array.
+//      console.error(err);
+//     });
+//    if (accounts[0].length > 0) {
+//     return true;
+//    } else return false;
+//   } catch (error) {
+//    console.error(error);
+//    return false;
+//   }
+//  }
  
  async function signMessage() {
   try {
@@ -107,20 +107,20 @@
     const { body } = await $fetch('/api/submit', {
     method: 'post',
     body: { signature: signature, message: message , address: accounts[0] } 
-  }).then((res) => res.json());
-  console.log(res);
+  })//.then((res));
+  //console.log(res);
 
   } catch (error) {
    console.log(error);
   }
  }
  
- async function signOut() {
-  try {
-   await ethereum.request({ method: "eth_requestAccounts" });
-  } catch (error) {
-   console.error(error);
-  }
- }
+//  async function signOut() {
+//   try {
+//    await ethereum.request({ method: "eth_requestAccounts" });
+//   } catch (error) {
+//    console.error(error);
+//   }
+//  }
  </script>
  

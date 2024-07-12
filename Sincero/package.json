@@ -17,6 +17,8 @@
     "base64-js": "^1.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cookie": "^0.6.0",
+    "cookie-universal-nuxt": "^2.2.2",
     "crypto": "^1.0.1",
     "did-jwt": "^8.0.4",
     "did-jwt-vc": "^4.0.4",
@@ -38,7 +40,7 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.0",
-    "@sidebase/nuxt-auth": "^0.7.2",
+    "@types/cookie": "^0.6.0",
     "nuxt": "^3.12.3",
     "nuxt-icon": "^0.6.10",
     "typescript": "^5.4.5"
