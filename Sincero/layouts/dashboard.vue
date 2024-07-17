@@ -41,7 +41,7 @@
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/page4" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+      <NuxtLink to="/dashboard/credentials" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
        <Icon name="ant-design:audit-outlined" size="20px" class="mx-0.5" />Credentials
       </NuxtLink>
      </li>

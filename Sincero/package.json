@@ -10,8 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@formkit/nuxt": "^1.6.5",
     "@nuxt/image": "^1.7.0",
     "@radix-icons/react": "^1.0.0",
+    "@vee-validate/zod": "^4.13.2",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
     "@vueuse/core": "^10.10.0",
     "axios": "^1.7.2",
     "base64-js": "^1.5.1",
@@ -25,6 +29,7 @@
     "did-resolver": "^4.1.0",
     "ethr-did": "^3.0.21",
     "ethr-did-resolver": "^10.1.9",
+    "formkit": "^1.6.5",
     "lucide-vue-next": "^0.383.0",
     "nuxt-security": "^2.0.0-rc.9",
     "radix-vue": "^1.8.3",
@@ -34,9 +39,11 @@
     "tailwindcss-animate": "^1.0.7",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
+    "vee-validate": "^4.13.2",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2",
-    "web3": "^4.10.0"
+    "web3": "^4.10.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.0",

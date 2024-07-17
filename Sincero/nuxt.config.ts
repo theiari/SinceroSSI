@@ -5,7 +5,13 @@ export default defineNuxtConfig({
     "nuxt-icon",
     "shadcn-nuxt",
     "nuxt-security",
+    '@formkit/nuxt',
   ],
+
+  formkit: {
+    // Experimental support for auto loading (see note):
+    autoImport: true
+  },
 
   // vite: {
   //   plugins: [
