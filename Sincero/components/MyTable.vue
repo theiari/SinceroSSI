@@ -24,7 +24,7 @@
          <DialogContent class="sm:max-w-[625px]">
           <DialogHeader>
            <DialogTitle>Modify existing Invitation</DialogTitle>
-           <DialogDescription> {{tabDetails}} </DialogDescription>
+           <DialogDescription>  </DialogDescription>
           </DialogHeader>
           <div class="grid gap-4 py-4">
            <div class="items-center gap-4">
