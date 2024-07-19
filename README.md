@@ -46,3 +46,15 @@ Sincero is aimed at [describe purpose and target audience]. It enables users to 
    ```bash
    git clone https://github.com/yourusername/sincero.git
    cd sincero
+
+2. Download node libraries
+   ```bash
+   npm i
+
+3. Move to main folder
+   ```bash
+   cd \Sincero
+
+4. Run the app
+   ```bash
+   npm run dev
