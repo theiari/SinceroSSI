@@ -10,7 +10,7 @@ export default defineNuxtConfig({
 
   formkit: {
     // Experimental support for auto loading (see note):
-    autoImport: true
+    autoImport: false,
   },
 
   // vite: {

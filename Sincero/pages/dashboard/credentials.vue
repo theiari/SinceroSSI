@@ -230,7 +230,7 @@ definePageMeta({
   </div>
 
   <div :class="['relative', 'overflow-auto']" style="max-height: 300px">
-    <myTable :tabDetails="In the tab it is possible to see available credentials."> </myTable>
+    <myTable> </myTable>
    <!-- <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-400">
     <thead class="text-xs text-gray-900 uppercase bg-gray-800 dark:bg-gray-900 dark:text-gray-800 sticky top-0">
      <tr>
