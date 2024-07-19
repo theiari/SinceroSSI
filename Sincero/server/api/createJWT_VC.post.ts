@@ -6,6 +6,7 @@ import { getResolver } from 'ethr-did-resolver';
 import { serialize } from 'cookie';  // Import the cookie package
 import { createVerifiableCredentialJwt, type Issuer, type JwtCredentialPayload } from 'did-jwt-vc'
 import { EthrDID } from 'ethr-did'
+import { validate } from 'vee-validate';
 // Initialize web3
 const web3 = new Web3();
 const resolver = new Resolver({ ...getResolver({ infuraProjectId: (useRuntimeConfig().public.infuraSecret) }) });
@@ -16,24 +17,51 @@ const issuer = new EthrDID({
   privateKey: 'd8b595680851765f38ea5405129244ba3cbad84467d190859f4c8b20c1ff6c75'
 }) as Issuer
 
-const vcPayload: JwtCredentialPayload = {
-  sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4',
-  nbf: 1562950282,
-  vc: {
-    '@context': ['https://www.w3.org/2018/credentials/v1'],
-    type: ['VerifiableCredential'],
-    credentialSubject: {
-      degree: {
-        type: 'BachelorDegree',
-        name: 'Baccalauréat en musiques numériques'
-      }
-    }
-  }
-}
+// const vcPayload: JwtCredentialPayload = {
+//   sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4',
+//   nbf: 1562950282,
+//   vc: {
+//     '@context': ['https://www.w3.org/2018/credentials/v1'],
+//     type: ['VerifiableCredential'],
+//     credentialSubject: {
+//       degree: {
+//         type: 'BachelorDegree',
+//         name: 'Baccalauréat en musiques numériques'
+//       }
+//     }
+//   }
+// }
 
 // const vcJwt = await createVerifiableCredentialJwt(vcPayload, 'did:ethr:0xf3beac30c498d9e26865f34fcaa57dbb935b0d74')
 // console.log(vcJwt)
 
+//function to check data validity
+//type should either be 'exam' 'degree' or 'multiple'
+const validateData = (title:string, grade:number, maxGrade:number, DID:string, certification:string) => {
+  const validTypes = ["exam", "degree", "multiple"];
+
+  if (typeof title !== 'string' || !title.trim()) {
+    console.log("title is not valid");
+    return false;
+  }
+  if (typeof grade !== 'number' || isNaN(grade)) {
+    return false;
+  }
+  if (typeof maxGrade !== 'number' || isNaN(maxGrade)) {
+    console.log("maxGrade is not valid");
+    return false;
+  }
+  if (typeof DID !== 'string' || !DID.trim()) {
+    console.log("DID is not valid");
+    return false;
+  }
+  if (!validTypes.includes(certification)) {
+    console.log("certification type is not valid");
+    return false;
+  }
+  
+  return true; // or you can return an object with valid data if needed
+}
 
 export default defineEventHandler(async (event: H3Event) => {
   // //TODO check if the token is already present, if it is, check if it is valid and return the response
@@ -50,14 +78,16 @@ export default defineEventHandler(async (event: H3Event) => {
 
   // Read the request body
   const body = await readBody(event);
-  const { title, grade, maxGrade, DID  } = body;
-  console.log("title: ", title);
-  console.log("grade: ", grade);
-  console.log("maxGrade: ", maxGrade);
-  console.log("DID: ", DID);
+  const { title, grade, maxGrade, DID, certification  } = body;
 
   //todo data validation
-
+  if (!validateData(title, grade, maxGrade, DID, certification)){
+    return {
+      message: 'Data validation failed',
+      code: 400,
+    
+    }
+  }
   // Create the VC
   const vc: JwtCredentialPayload = {
     sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
@@ -67,7 +97,7 @@ export default defineEventHandler(async (event: H3Event) => {
       type: ['VerifiableCredential'],
       credentialSubject: {
         degree: {
-          type: 'BachelorDegree',
+          type: certification,
           title: title,
           grade: grade,
           maxGrade: maxGrade,
@@ -82,61 +112,5 @@ export default defineEventHandler(async (event: H3Event) => {
     jwt: vcJwt,
     code: 200,
   }
-  // body.message = message.concat(Math.random().toString(36).substring(7));
-  // // console.log('body:', body);
-  // let jwt: string | null = null;
-
-  // // Function to verify the signature
-  // const verifySignature = (originalMessage: string, publicKey: string, signature: string) => {
-  //   try {
-  //     const recoveredAddress = web3.eth.accounts.recover(originalMessage, signature);
-  //     return recoveredAddress.toLowerCase() === publicKey.toLowerCase();
-  //   } catch (error) {
-  //     console.error('Error verifying signature:', error);
-  //     return false;
-  //   }
-  // };
-
-  // // Verify the signature
-  // const isValid = verifySignature(message, address, signature);
-  // if (isValid) {
-  //   const signer = ES256KSigner(hexToBytes(useRuntimeConfig().public.jwtSecret));
-  //   const currentTime = Math.floor(Date.now() / 1000);
-  //   const expirationTime = currentTime + (30 * 60); // Add 30 minutes in seconds
-  //   jwt = await createJWT(
-  //     { aud: 'did:ethr:' + body.address, exp: expirationTime, name: 'holder of the claim' },
-  //     { issuer: 'did:ethr:0xf3beac30c498d9e26865f34fcaa57dbb935b0d74', signer },
-  //     { alg: 'ES256K' }
-  //   );
-
-  //   // Set JWT as a cookie in the response header
-  //   const cookie = serialize('token', jwt, {
-  //     httpOnly: true,
-  //     secure: process.env.NODE_ENV === 'production',
-  //     sameSite: 'strict',
-  //     path: '/',
-  //   });
-
-  //   // Add the cookie to the response header
-  //   event.node.res.setHeader('token', cookie);
-  // } else {
-  //   throw new Error('Signature is invalid');
-  // }
   
-
-  // // Use the JWT from step 1
-  // const verificationResponse = await verifyJWT(jwt, {
-  //   resolver,
-  //   audience: 'did:ethr:' + body.address,
-  // });
-
-
-
-  // // Return the verification result
-  // return {
-  //   message: 'Signature is valid: ' + isValid,
-  //   jwt: jwt,
-  //   decoded: decodeJWT(jwt),
-  //   verified: verificationResponse,
-  // };
 });

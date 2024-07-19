@@ -35,11 +35,12 @@ import {
 import { useToast } from "@/components/ui/toast/use-toast";
 import { required, numeric } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-
+let selectedValue = ref('5');
 export default {
  data() {
   return {
    form: {
+   certification: "",
     title: "",
     grade: "",
     maxGrade: "",
@@ -50,6 +51,7 @@ export default {
  validations() {
 return {
    form: {
+    certification: { required },
     title: { required },
     grade: { required, numeric },
     maxGrade: { required, numeric },
@@ -88,6 +90,7 @@ return {
   validation(){
     return {
       form: {
+        certification: { required },
         title: { required },
         grade: { required, numeric },
         maxGrade: { required, numeric },
@@ -128,22 +131,22 @@ definePageMeta({
       </DialogHeader>
       <div class="grid gap-4 py-4">
        <div class="items-center gap-4">
-        <RadioGroup defaultValue="option-one">
-         <div class="flex justify-center">
-          <div class="flex items-center space-x-2 mx-3">
-           <RadioGroupItem id="option-one" value="option-one" />
-           <Label for="option-one">Exam</Label>
-          </div>
-          <div class="flex items-center space-x-2 mx-3">
-           <RadioGroupItem id="option-two" value="option-two" />
-           <Label for="option-two">Degree</Label>
-          </div>
-          <div class="flex items-center space-x-2 mx-3">
-           <RadioGroupItem id="option-three" value="option-three" />
-           <Label for="option-three">Multiple</Label>
-          </div>
-         </div>
-        </RadioGroup>
+        <RadioGroup v-model="form.certification" defaultValue="exam" v-bind="componentField">
+    <div class="flex justify-center">
+      <div class="flex items-center space-x-2 mx-3">
+        <RadioGroupItem id="option-one" value="exam" />
+        <Label for="option-one">Exam</Label>
+      </div>
+      <div class="flex items-center space-x-2 mx-3">
+        <RadioGroupItem id="option-two" value="degree" />
+        <Label for="option-two">Degree</Label>
+      </div>
+      <div class="flex items-center space-x-2 mx-3">
+        <RadioGroupItem id="option-three" value="multiple" />
+        <Label for="option-three">Multiple</Label>
+      </div>
+    </div>
+  </RadioGroup>
        </div>
 
        <!-- <Label for="title" class="text-right"> Title </Label>
@@ -173,9 +176,9 @@ definePageMeta({
        </div>
        <div class="grid grid-cols-4 items-center gap-2">
         <Label for="grade" class="col-span-1"> Grade </Label>
-        <Input id="grade" v-model="form.grade" class="col-span-1" />
-        <Label for="max-grade" class="text-right col-span-1"> Max grade </Label>
-        <Input id="max-grade" v-model="form.maxGrade" class="col-span-1" />
+        <Input id="grade" type="number" v-model="form.grade" class="col-span-1" />
+        <Label for="max-grade"  class="text-right col-span-1"> Max grade </Label>
+        <Input id="max-grade" type="number" v-model="form.maxGrade" class="col-span-1" />
        </div>
       </div>
       <DialogClose as-child>
@@ -227,7 +230,8 @@ definePageMeta({
   </div>
 
   <div :class="['relative', 'overflow-auto']" style="max-height: 300px">
-   <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-400">
+    <myTable :tabDetails="In the tab it is possible to see available credentials."> </myTable>
+   <!-- <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-400">
     <thead class="text-xs text-gray-900 uppercase bg-gray-800 dark:bg-gray-900 dark:text-gray-800 sticky top-0">
      <tr>
       <th scope="col" class="px-6 py-3 bg-gray-300 dark:bg-gray-900">Name</th>
@@ -236,7 +240,7 @@ definePageMeta({
       <th scope="col" class="px-6 py-3 bg-gray-300 dark:bg-gray-900">Actions</th>
      </tr>
     </thead>
-    <tbody v-for="p in products">
+    <tbody v-for="p in products"> 
      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
       <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
        <div class="truncate" style="max-width: 200px">{{ p.title }}</div>
@@ -252,7 +256,7 @@ definePageMeta({
          <DialogContent class="sm:max-w-[625px]">
           <DialogHeader>
            <DialogTitle>Modify existing Invitation</DialogTitle>
-           <DialogDescription> In this tab it's possible to see available invitation. </DialogDescription>
+           <DialogDescription> In this tab it's possible to see available credentials. </DialogDescription>
           </DialogHeader>
           <div class="grid gap-4 py-4">
            <div class="items-center gap-4">
@@ -303,7 +307,7 @@ definePageMeta({
       </td>
      </tr>
     </tbody>
-   </table>
+   </table> -->
   </div>
  </a>
 </template>
