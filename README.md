@@ -53,7 +53,7 @@ Sincero is aimed at [describe purpose and target audience]. It enables users to 
 
 3. Move to main folder
    ```bash
-   cd \Sincero
+   cd Sincero/
 
 4. Run the app
    ```bash
