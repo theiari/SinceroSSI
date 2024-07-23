@@ -15,91 +15,104 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
  DropdownMenu,
  DropdownMenuContent,
- DropdownMenuLabel,
  DropdownMenuRadioGroup,
  DropdownMenuRadioItem,
- DropdownMenuSeparator,
  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
- AlertDialog,
- AlertDialogAction,
- AlertDialogCancel,
- AlertDialogContent,
- AlertDialogDescription,
- AlertDialogFooter,
- AlertDialogHeader,
- AlertDialogTitle,
- AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { required, numeric } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-let selectedValue = ref('5');
+
+import { h } from "vue";
+import { ToastAction } from "@/components/ui/toast";
+import Toaster from '@/components/ui/toast/Toaster.vue'
+const { toast } = useToast();
+
+
 export default {
  data() {
   return {
    form: {
-   certification: "",
+    certification: "",
     title: "",
     grade: "",
     maxGrade: "",
     DID: "",
    },
+  selectedValue: ref("5"),
   };
  },
  validations() {
-return {
+  return {
    form: {
     certification: { required },
     title: { required },
     grade: { required, numeric },
     maxGrade: { required, numeric },
-    DID: { numeric},
-   }
-  }
-
+    DID: { numeric },
+   },
+  };
  },
  methods: {
   clicked() {
    console.log("clicked");
+   toast({
+      title: "Error",
+      message: "Something went wrong, please check the field and try again",
+      actions: [
+       h(
+        Button,
+        {
+         onClick: () => {
+          console.log("clicked");
+         },
+        },
+        { default: () => "Retry" }
+       ),
+      ],
+     });
   },
   async onSubmit() {
-    const $v = useVuelidate(this.validation(), this.form);
-    console.log("plain $v", $v);
+   const $v = useVuelidate(this.validation(), this.form);
+   console.log("plain $v", $v);
 
    console.log("Form submitted:", this.form);
-  //  if (this.v$.$invalid) {
-  //   alert("Please correct the errors in the form");
-  //   return;
-  //  }
-  //  console.log("Form submitted:", this.form);
-  //make a post request to the server passing the form data
-  const data = await $fetch('/api/createJWT_VC', {
-    method: 'POST',
+
+   const data = await $fetch("/api/createJWT_VC", {
+    method: "POST",
     body: this.form,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-  }).then((res) => {
-    console.log(res);
-  });
-  },
-  
+    headers: {
+     "Content-Type": "application/json",
+    },
+   }).then((res) => {
+    if (res.code === 200) {
+      toast({
+        title: 'Success',
+        description: 'Data sent successfully',
+        variant: 'success',
+      });
+    } else {
 
-  validation(){
-    return {
-      form: {
-        certification: { required },
-        title: { required },
-        grade: { required, numeric },
-        maxGrade: { required, numeric },
-        DID: { numeric},
-      }
+     toast({
+        title: 'Something went wrong.',
+        description: 'Please check the fields and try again',
+        variant: 'destructive',
+      });
     }
-  }
+   });
+  },
 
-
+  validation() {
+   return {
+    form: {
+     certification: { required },
+     title: { required },
+     grade: { required, numeric },
+     maxGrade: { required, numeric },
+     DID: { numeric },
+    },
+   };
+  },
  },
 };
 
@@ -108,13 +121,14 @@ definePageMeta({
 });
 </script>
 <template>
+  
  <a
   class="block mb-3 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
  >
   <div class="relative flex justify-between mb-1 items-center">
    <div class="flex items-center">
-    <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mx-5">Credentials</h5>
-
+    <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Connections</h5>
+    <Toaster />
     <Dialog>
      <DialogTrigger>
       <Button class="flex items-center justify-center mx-2">
@@ -132,42 +146,24 @@ definePageMeta({
       <div class="grid gap-4 py-4">
        <div class="items-center gap-4">
         <RadioGroup v-model="form.certification" defaultValue="exam" v-bind="componentField">
-    <div class="flex justify-center">
-      <div class="flex items-center space-x-2 mx-3">
-        <RadioGroupItem id="option-one" value="exam" />
-        <Label for="option-one">Exam</Label>
-      </div>
-      <div class="flex items-center space-x-2 mx-3">
-        <RadioGroupItem id="option-two" value="degree" />
-        <Label for="option-two">Degree</Label>
-      </div>
-      <div class="flex items-center space-x-2 mx-3">
-        <RadioGroupItem id="option-three" value="multiple" />
-        <Label for="option-three">Multiple</Label>
-      </div>
-    </div>
-  </RadioGroup>
+         <div class="flex justify-center">
+          <div class="flex items-center space-x-2 mx-3">
+           <RadioGroupItem id="option-one" value="exam" />
+           <Label for="option-one">Exam</Label>
+          </div>
+          <div class="flex items-center space-x-2 mx-3">
+           <RadioGroupItem id="option-two" value="degree" />
+           <Label for="option-two">Degree</Label>
+          </div>
+          <div class="flex items-center space-x-2 mx-3">
+           <RadioGroupItem id="option-three" value="multiple" />
+           <Label for="option-three">Multiple</Label>
+          </div>
+         </div>
+        </RadioGroup>
        </div>
 
-       <!-- <Label for="title" class="text-right"> Title </Label>
-  <Input id="title" class="col-span-2"  /> -->
-       <div class="grid grid-cols-4 items-center gap-4 mr-5">
-        <!-- <FormKit
-         name="title"
-         label="Title"
-         validation="required|length:3|"
-         validation-visibility="live"
-         :classes="{
-          outer: {
-            'my-button': true
-          },
-          input: {
-            $reset: true
-          }
-        }"
-        /> -->
-        <!-- <pre wrap>{{ value }}</pre> -->
-       </div>
+       <div class="grid grid-cols-4 items-center gap-4 mr-5"></div>
        <div class="grid grid-cols-4 items-center gap-2">
         <Label for="title" class="col-span-1"> Title </Label>
         <Input id="title" v-model="form.title" class="col-span-1" />
@@ -177,15 +173,14 @@ definePageMeta({
        <div class="grid grid-cols-4 items-center gap-2">
         <Label for="grade" class="col-span-1"> Grade </Label>
         <Input id="grade" type="number" v-model="form.grade" class="col-span-1" />
-        <Label for="max-grade"  class="text-right col-span-1"> Max grade </Label>
+        <Label for="max-grade" class="text-right col-span-1"> Max grade </Label>
         <Input id="max-grade" type="number" v-model="form.maxGrade" class="col-span-1" />
        </div>
       </div>
       <DialogClose as-child>
-
-      <Button @click="onSubmit()">
-       Create Verifiable Credential <Icon name="ant-design:send-outlined" size="20px" class="mx-0.5" />
-      </Button>
+       <Button @click="onSubmit()">
+        Create Verifiable Credential <Icon name="ant-design:send-outlined" size="20px" class="mx-0.5" />
+       </Button>
       </DialogClose>
      </DialogContent>
     </Dialog>
@@ -230,84 +225,7 @@ definePageMeta({
   </div>
 
   <div :class="['relative', 'overflow-auto']" style="max-height: 300px">
-    <myTable> </myTable>
-   <!-- <table class="w-full text-sm text-left rtl:text-right text-gray-600 dark:text-gray-400">
-    <thead class="text-xs text-gray-900 uppercase bg-gray-800 dark:bg-gray-900 dark:text-gray-800 sticky top-0">
-     <tr>
-      <th scope="col" class="px-6 py-3 bg-gray-300 dark:bg-gray-900">Name</th>
-      <th scope="col" class="px-6 py-3 bg-gray-300 dark:bg-gray-900">Protocol</th>
-      <th scope="col" class="px-6 py-3 bg-gray-300 dark:bg-gray-900">Created at</th>
-      <th scope="col" class="px-6 py-3 bg-gray-300 dark:bg-gray-900">Actions</th>
-     </tr>
-    </thead>
-    <tbody v-for="p in products"> 
-     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-       <div class="truncate" style="max-width: 200px">{{ p.title }}</div>
-      </th>
-      <td class="px-6 py-4">{{ p.category }}</td>
-      <td class="px-6 py-4">{{ p.category }}</td>
-      <td class="px-8 py-4">
-       <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-        <Dialog>
-         <DialogTrigger>
-          <Icon name="ant-design:eye-filled" size="20px" />
-         </DialogTrigger>
-         <DialogContent class="sm:max-w-[625px]">
-          <DialogHeader>
-           <DialogTitle>Modify existing Invitation</DialogTitle>
-           <DialogDescription> In this tab it's possible to see available credentials. </DialogDescription>
-          </DialogHeader>
-          <div class="grid gap-4 py-4">
-           <div class="items-center gap-4">
-            <RadioGroup>
-             <div class="flex justify-center">
-              <div class="flex items-center space-x-2 mx-3">
-               <RadioGroupItem id="option-one" value="option-one" disabled />
-               <Label for="option-one">Single use</Label>
-              </div>
-              <div class="flex items-center space-x-2">
-               <RadioGroupItem id="option-two" value="option-two" disabled selected />
-               <Label for="option-two">Multiple use</Label>
-              </div>
-             </div>
-            </RadioGroup>
-            <div class="flex justify-center">
-             <NuxtImg :src="p.image" width="130" heigth="130" />
-            </div>
-           </div>
-           <div class="grid grid-cols-4 items-center gap-4">
-            <Label for="username" class="text-right"> Alias </Label>
-            <Input id="username" class="col-span-2" />
-           </div>
-          </div>
-          <DialogFooter>
-           <Button> Create Invitation <Icon name="ant-design:send-outlined" size="20px" class="mx-0.5" /></Button>
-          </DialogFooter>
-         </DialogContent>
-        </Dialog>
-        <AlertDialog>
-         <AlertDialogTrigger as-child>
-          <Icon name="ant-design:delete-outlined" size="20px" />
-         </AlertDialogTrigger>
-         <AlertDialogContent>
-          <AlertDialogHeader>
-           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the invitation from the system.
-           </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-           <AlertDialogCancel>Cancel</AlertDialogCancel>
-           <AlertDialogAction>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-         </AlertDialogContent>
-        </AlertDialog>
-       </a>
-      </td>
-     </tr>
-    </tbody>
-   </table> -->
+   <myTable> </myTable>
   </div>
  </a>
 </template>
@@ -318,5 +236,9 @@ definePageMeta({
  border-radius: 1rem;
  text-align: center;
  padding: 5px;
+}
+.toast {
+  background-color: #4caf50; /* Green */
+  color: white;
 }
 </style>

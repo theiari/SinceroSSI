@@ -40,14 +40,14 @@ const issuer = new EthrDID({
 const validateData = (title:string, grade:number, maxGrade:number, DID:string, certification:string) => {
   const validTypes = ["exam", "degree", "multiple"];
 
-  if (typeof title !== 'string' || !title.trim()) {
+  if (typeof title !== 'string' || !title.trim() || title.length < 3 || title.length > 100) {
     console.log("title is not valid");
     return false;
   }
-  if (typeof grade !== 'number' || isNaN(grade)) {
+  if (typeof grade !== 'number' || isNaN(grade) || grade < 0) {
     return false;
   }
-  if (typeof maxGrade !== 'number' || isNaN(maxGrade)) {
+  if (typeof maxGrade !== 'number' || isNaN(maxGrade) || maxGrade < grade) {
     console.log("maxGrade is not valid");
     return false;
   }
@@ -55,7 +55,7 @@ const validateData = (title:string, grade:number, maxGrade:number, DID:string, c
     console.log("DID is not valid");
     return false;
   }
-  if (!validTypes.includes(certification)) {
+  if (!validTypes.includes(certification) || typeof certification !== 'string') {
     console.log("certification type is not valid");
     return false;
   }
