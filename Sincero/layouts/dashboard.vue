@@ -31,7 +31,7 @@
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/page2" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+      <NuxtLink to="/dashboard/configuration" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
        <Icon name="ant-design:form-outlined" size="20px" class="mx-0.5" />Configuration</NuxtLink
       >
      </li>
@@ -46,17 +46,17 @@
       </NuxtLink>
      </li>
      <li class="menu-item">
-      <NuxtLink to="/page5" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+      <NuxtLink to="/dashboard/issuance" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
         <Icon name="ant-design:delivered-procedure-outlined" size="20px" class="mx-0.5"
       />Issuance</NuxtLink>
      </li>
      <li class="menu-item">
-      <NuxtLink to="/page6" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+      <NuxtLink to="/dashboard/messages" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
         <Icon name="ant-design:message-outlined" size="20px" class="mx-0.5"
       />Messages</NuxtLink>
      </li>
      <li class="menu-item">
-      <NuxtLink to="/page7" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+      <NuxtLink to="/dashboard/verification" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
         <Icon name="ant-design:security-scan-outlined" size="20px" class="mx-0.5"
       />Verification</NuxtLink>
      </li>

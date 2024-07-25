@@ -145,7 +145,7 @@ definePageMeta({
       </DialogHeader>
       <div class="grid gap-4 py-4">
        <div class="items-center gap-4">
-        <RadioGroup v-model="form.certification" defaultValue="exam" v-bind="componentField">
+        <RadioGroup v-model="form.certification" defaultValue="exam">
          <div class="flex justify-center">
           <div class="flex items-center space-x-2 mx-3">
            <RadioGroupItem id="option-one" value="exam" />
@@ -242,3 +242,8 @@ definePageMeta({
   color: white;
 }
 </style>
+
+
+
+
+

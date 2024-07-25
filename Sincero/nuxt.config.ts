@@ -1,10 +1,10 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
-    "@nuxt/image",
-    "nuxt-icon",
-    "shadcn-nuxt",
-    "nuxt-security",
+    '@nuxt/image',
+    'nuxt-icon',
+    'shadcn-nuxt',
+    'nuxt-security',
     '@formkit/nuxt',
   ],
 
@@ -13,21 +13,14 @@ export default defineNuxtConfig({
     autoImport: false,
   },
 
-  // vite: {
-  //   plugins: [
-  //     require('dotenv').config()
-  //   ]
-  // },
-
-
-
-  runtimeConfig:{
-    public:{
-    jwtSecret: process.env.JWT_SECRET,
-    infuraSecret: process.env.INFURA_SECRET,
-    }
+  runtimeConfig: {
+    public: {
+      jwtSecret: process.env.JWT_SECRET,
+      infuraSecret: process.env.INFURA_SECRET,
+      kmsSecretKey: process.env.VERAMO_SECRET_KEY,
+      databaseFile: process.env.DATABASE_FILE,
+    },
   },
 
-
-  compatibilityDate: '2024-07-05',
+  compatibilityDate: '2024-07-23',
 })

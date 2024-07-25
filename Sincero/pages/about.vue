@@ -7,10 +7,37 @@
     <p v-if="jwt">JWT: {{ jwt }}</p>
     <p v-if="error" style="color: red;">Error: {{ error }}</p>
   </div>
+  <div>
+    <h1>SSI Wallet</h1>
+    <button @click="createDid">Create DID</button>
+    <p v-if="did">Your DID: {{ did }}</p>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { enableMasca, isError } from '@blockchain-lab-um/masca-connector';
+
+
+let temp = await ethereum.request({ method: "eth_requestAccounts" });
+// Connect the user and get the address of his current account
+const accounts = await window.ethereum.request({
+  method: 'eth_requestAccounts',
+});
+const address = accounts[0];
+
+// Enable Masca
+const enableResult = await enableMasca(address);
+
+// Check if there was an error and handle it accordingly
+if (isError(enableResult)) {
+  // Error message is available under error
+  console.error(eneableResult.error)
+  
+}
+
+// Now get the Masca API object
+const api = await enableResult.data.getMascaApi();
 
 let jwt = ref('');
 const error = ref('');
@@ -54,6 +81,11 @@ async function returnNumberGET() {
     body: { test: 123 }
   })
 }
+
+  async function createDid() {
+      const { did } = await agent.didManagerCreate();
+      this.did = did;
+    }
 
 </script>
 
