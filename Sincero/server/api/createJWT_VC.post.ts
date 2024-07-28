@@ -118,8 +118,8 @@ export default defineEventHandler(async (event: H3Event) => {
       '@context': ['https://www.w3.org/2018/credentials/v1'],
       type: ['VerifiableCredential'],
       credentialSubject: {
-        degree: {
-          type: certification,
+        type: certification,
+        data: {
           title: title,
           grade: grade,
           maxGrade: maxGrade,
