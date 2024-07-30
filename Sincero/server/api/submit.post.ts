@@ -29,10 +29,18 @@ export default defineEventHandler(async (event) => {
   if (isValid){
     const signer = ES256KSigner(hexToBytes(useRuntimeConfig().public.jwtSecret))
     jwt = await createJWT(
-      { aud: 'did:ethr:'+body.address, iat: Math.floor(Date.now() / 1000), name: 'holder of the claim' },  //TODO maybe aud did type should be generalized to any blockchain
+      { aud: 'did:ethr:'+body.address, iat: Math.floor(Date.now() / 1000), name: 'holder of the claim', exp: Math.floor(Date.now() / 1000) + 1800},  //TODO maybe aud did type should be generalized to any blockchain
       { issuer: 'did:ethr:0xf3beac30c498d9e26865f34fcaa57dbb935b0d74', signer }, //TODO magic string issuer has to be replaced
       { alg: 'ES256K' }
     )
+
+    // Set cookie with JWT token
+    setCookie(event, '__session', jwt, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 3600 // 1 hour
+    });
+
 
   }
   else

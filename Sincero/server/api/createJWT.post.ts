@@ -14,23 +14,6 @@ const issuer = new EthrDID({
   privateKey: 'd8b595680851765f38ea5405129244ba3cbad84467d190859f4c8b20c1ff6c75'
 }) as Issuer
 
-const vcPayload: JwtCredentialPayload = {
-  sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4',
-  nbf: 1562950282,
-  vc: {
-    '@context': ['https://www.w3.org/2018/credentials/v1'],
-    type: ['VerifiableCredential'],
-    credentialSubject: {
-      degree: {
-        type: 'BachelorDegree',
-        name: 'Baccalauréat en musiques numériques',
-        score: 100,
-        maxScore: 110
-      }
-    }
-  }
-}
-
 //const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer)
 //console.log(vcJwt)
 
