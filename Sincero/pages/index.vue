@@ -14,15 +14,7 @@
        class="mt-8 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full hover:bg-blue-500 transition duration-300 transform hover:scale-105"
       >
        <NuxtLink to="/generate">Generate personal DID</NuxtLink>
-      </button>
-
-      <p></p> DEBUG
-      <p></p>
-      <button>
-       <NuxtLink @click="setLocalStorage(1, 1)">Set Local Storage</NuxtLink>
-      </button>
-      <p></p>
-      <button><NuxtLink @click="getLocalStorage(1)">Get Local Storage</NuxtLink></button>
+        </button>
      </div>
     </div>
    </section>

@@ -1,35 +1,27 @@
-import { verifyJWT } from 'did-jwt'
-import { Resolver } from 'did-resolver'
+// server/api/verify-jwt.post.js
+import { verifyCredential } from 'did-jwt-vc';
+import { Resolver } from 'did-resolver';
+import { getResolver } from 'ethr-did-resolver';
 
-const resolver = new Resolver({
-  // Configure your DID resolver here
-  // Example for Universal Resolver:
-  // 'web': async (did) => {
-  //   return fetch(`https://uniresolver.io/1.0/identifiers/${did}`).then(res => res.json());
-  // }
-});
-
-// verifyJWT('eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6dXBvcn....', {
-//   resolver,
-//   audience: 'Your DID'
-// }).then(({ payload, doc, did, signer, jwt }) => {
-//   console.log(payload)
-// })
-
-export default async (req, res) => {
-  const { token, audience } = req.body;
-
-  if (!token || !audience) {
-    return res.status(400).json({ error: 'Token and audience are required' });
+export default defineEventHandler(async (event) => {
+  // const body = await useBody(event);
+  const token = getCookie(event, '__session');
+  console.log("the token:", token);
+  if (!token) {
+    console.log("No token provided!!!");
+    throw createError({ statusCode: 401, statusMessage: 'No token provided' });
   }
+  // const { jwt } = body;
+  console.log("the token:", token);
+  const resolver = new Resolver(getResolver({infuraProjectId: useRuntimeConfig().public.infuraSecret}));
 
   try {
-    const { payload, doc, did, signer, jwt } = await verifyJWT(token, {
+    const verified = await verifyDidJwt(token, {
       resolver,
-      audience
+       audience: 'did:ethr:0xf3beac30c498d9e26865f34fcaa57dbb935b0d74'
     });
-    return res.status(200).json({ payload, doc, did, signer, jwt });
+    return { verified };
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    return { error: error.message, code: 401 };
   }
-}
+});

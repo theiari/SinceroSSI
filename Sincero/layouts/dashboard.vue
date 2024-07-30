@@ -10,16 +10,22 @@
      <ul class="flex space-x-5 text-lg font-medium items-center">
       <!-- Navigation links -->
       <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
-      <li><NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink></li>
-      <li><NuxtLink to="/generate" class="text-gray-600 hover:text-blue-600 transition duration-300">Generate</NuxtLink></li>
-      <li><NuxtLink @click="signMessage" class="text-gray-600 hover:text-blue-600 transition duration-300">Sign DEBUG</NuxtLink></li> 
-    </ul>
+      <li>
+       <NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink>
+      </li>
+      <li>
+       <NuxtLink to="/generate" class="text-gray-600 hover:text-blue-600 transition duration-300">Generate</NuxtLink>
+      </li>
+      <li>
+       <NuxtLink @click="signMessage" class="text-gray-600 hover:text-blue-600 transition duration-300"
+        >Sign DEBUG</NuxtLink
+       >
+      </li>
+     </ul>
     </nav>
     <div class="flex items-center space-x-4">
-     <div v-if="account">
-      <b>Connected as:  </b> {{ account }}
-     </div>
-     </div>
+     <div v-if="account"><b>Connected as: </b> {{ account }}</div>
+    </div>
    </div>
   </header>
   <div class="flex flex-grow">
@@ -47,23 +53,32 @@
      </li>
      <li class="menu-item">
       <NuxtLink to="/dashboard/issuance" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-        <Icon name="ant-design:delivered-procedure-outlined" size="20px" class="mx-0.5"
-      />Issuance</NuxtLink>
+       <Icon name="ant-design:delivered-procedure-outlined" size="20px" class="mx-0.5" />Issuance</NuxtLink
+      >
      </li>
      <li class="menu-item">
       <NuxtLink to="/dashboard/messages" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-        <Icon name="ant-design:message-outlined" size="20px" class="mx-0.5"
-      />Messages</NuxtLink>
+       <Icon name="ant-design:message-outlined" size="20px" class="mx-0.5" />Messages</NuxtLink
+      >
      </li>
      <li class="menu-item">
       <NuxtLink to="/dashboard/verification" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-        <Icon name="ant-design:security-scan-outlined" size="20px" class="mx-0.5"
-      />Verification</NuxtLink>
+       <Icon name="ant-design:security-scan-outlined" size="20px" class="mx-0.5" />Verification</NuxtLink
+      >
      </li>
-     <li class="menu-item " >
+     <li class="menu-item">
       <NuxtLink to="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-        <Icon name="ant-design:info-circle-outlined" size="20px" class="mx-0.5"
-      />About</NuxtLink>
+       <Icon name="ant-design:info-circle-outlined" size="20px" class="mx-0.5" />About</NuxtLink
+      >
+     </li>
+     <li>
+      <NuxtLink
+       @click="goHome"
+       class="block py-2 px-4 text-gray-700 hover:bg-red-500 hover:text-white transition-colors duration-300"
+      >
+       <Icon name="ant-design:logout-outlined" size="20px" class="mx-0.5" />
+       Logout
+      </NuxtLink>
      </li>
     </ul>
    </aside>
@@ -90,4 +105,9 @@
 
 <script setup>
 
+async function goHome(){
+ //invalidate the session
+  await $fetch("/api/logout");
+  navigateTo("/");
+}
 </script>

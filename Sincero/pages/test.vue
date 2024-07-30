@@ -22,7 +22,7 @@
   
   <script setup>
 import { ref, onMounted } from 'vue';
-import { decodeJWT } from 'did-jwt';
+import { decodeJWT, verifyJWT } from 'did-jwt';
 
 const isAuthenticated = ref(false);
 const loading = ref(true);
@@ -36,6 +36,7 @@ async function fetchData() {
     // Check if JWT exists and is valid (similar logic to useAuth)
     if (jwt) {
       try {
+        verifyJWT(jwt.token);
         const decodedToken = decodeJWT(jwt.token);
         console.log("decoded token:", decodedToken);
         const currentTime = Math.floor(Date.now() / 1000);
