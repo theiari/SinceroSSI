@@ -71,7 +71,7 @@
        <Icon name="ant-design:info-circle-outlined" size="20px" class="mx-0.5" />About</NuxtLink
       >
      </li>
-     <li>
+     <li class="menu-item">
       <NuxtLink
        @click="goHome"
        class="block py-2 px-4 text-gray-700 hover:bg-red-500 hover:text-white transition-colors duration-300"
