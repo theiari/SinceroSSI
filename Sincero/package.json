@@ -65,6 +65,8 @@
     "@types/cookie": "^0.6.0",
     "nuxt": "^3.12.3",
     "nuxt-icon": "^0.6.10",
-    "typescript": "^5.5.4"
-  }
+    "typescript": "^5.5.4",
+    "nx": "19.7.3"
+  },
+  "nx": {}
 }

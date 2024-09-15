@@ -1,13 +1,11 @@
 <template>
- <a
-  class="block mb-3 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
- >
+
   <div class="relative flex justify-between mb-1 items-center">
    <div class="flex items-center">
     <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Invitations</h5>
     <Dialog>
      <DialogTrigger>
-      <Button class="flex items-center justify-center mx-2">
+      <Button class="flex items-center justify-center mx-2" >
        New invitation
        <Icon name="ant-design:plus-square-outlined" class="mx-0.5" size="24px" />
       </Button>
@@ -115,7 +113,7 @@
       <td class="px-6 py-4">{{ p.category }}</td>
       <td class="px-6 py-4">{{ p.category }}</td>
       <td class="px-8 py-4">
-       <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+       
         <Dialog>
          <DialogTrigger>
           <Icon name="ant-design:eye-filled" size="20px" />
@@ -177,13 +175,13 @@
     </AlertDialogContent>
   </AlertDialog>
         
-       </a>
+       
       </td>
      </tr>
     </tbody>
    </table>
   </div>
- </a>
+ 
 </template>
 
 <script setup lang="ts">
@@ -235,6 +233,7 @@ let selectedValue:any = ref('5');
 //   return (parseInt(selectedValue) + 5) + 'px';
 // }
 const { toast } = useToast();
+
 
 
 

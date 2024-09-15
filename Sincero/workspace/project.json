@@ -1,0 +1,9 @@
+{
+  "name": "workspace",
+  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "includedScripts": [],
+  "projectType": "application",
+  "sourceRoot": "./src",
+  "// targets": "to see all targets run: nx show project workspace --web",
+  "targets": {}
+}
