@@ -1,31 +1,10 @@
 <script language="ts">
 import { Button } from "@/components/ui/button";
-import {
- Dialog,
- DialogContent,
- DialogDescription,
- DialogFooter,
- DialogHeader,
- DialogTitle,
- DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
- DropdownMenu,
- DropdownMenuContent,
- DropdownMenuRadioGroup,
- DropdownMenuRadioItem,
- DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { required, numeric } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-
 import { h } from "vue";
-import { ToastAction } from "@/components/ui/toast";
-import Toaster from '@/components/ui/toast/Toaster.vue'
+import { Masca, enableMasca } from '@blockchain-lab-um/masca-connector';
 const { toast } = useToast();
 
 

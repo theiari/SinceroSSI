@@ -79,9 +79,71 @@
 </template>
 
 <script setup lang="ts">
+import { Masca, enableMasca, isSuccess, type Result } from '@blockchain-lab-um/masca-connector';
 //fetch random products
-let products: any[] = [];
-const response = await fetch("https://fakestoreapi.com/products");
-const data = await response.json();
-products = data;
+const products = ref<any[]>([]);
+    const verifiableCredential = {
+  '@context': ['https://www.w3.org/2018/credentials/v1'],
+  type: ['VerifiableCredential'],
+  credentialSubject: {
+    type: 'certification',
+    data: {
+      title: 'Example Title',
+      grade: 'A',
+      maxGrade: 'A',
+      extra: 'DID:example:123456'
+    }
+  }
+};
+onMounted(async () => {
+  try {
+    // Fetch random products from an API
+    const response = await fetch("https://fakestoreapi.com/products");
+    const data = await response.json();
+    products.value = data;
+
+    // Ensure `window.ethereum` is available
+    if (typeof window.ethereum === 'undefined') {
+      throw new Error('Ethereum provider (MetaMask) is not available');
+    }
+
+    // Connect the user and get the address of their current account
+    const accounts = (await window.ethereum.request({ method: "eth_requestAccounts" })) as string[];
+    const address = accounts[0] ?? '';
+
+    console.log('Ethereum Address:', address);
+
+    // Enable Masca
+    const enableResult: Result<Masca> = await enableMasca(address, {
+      snapId: 'npm:@blockchain-lab-um/masca',
+      version: '1.2.2',
+      supportedMethods: ['did:polygonid', 'did:pkh'],
+    });
+
+    if (isSuccess(enableResult)) {
+      const api = enableResult.data; // 'data' contains the Masca API
+      console.log('Masca API:', api);
+      const credentialString = JSON.stringify(verifiableCredential);
+      api.getMascaApi().saveCredential(credentialString), {
+        store: 'snap',
+      };
+      let MascaApi = api.getMascaApi();
+    //   console.log("the queried credentials are the following",MascaApi.queryCredentials())
+    const queryResult = await MascaApi.queryCredentials();
+    if (isSuccess(queryResult)) {
+          console.log('The queried credentials are the following:', queryResult.data);
+        } else {
+          console.error('Error querying credentials:', queryResult.error);
+        }
+    }
+       else {
+      console.error('Error enabling Masca:', enableResult.error);
+    }
+
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+
+    
+});
 </script>

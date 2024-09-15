@@ -9,9 +9,9 @@ import { EthrDID } from 'ethr-did'
 import { validate } from 'vee-validate';
 import { agent } from '../../services/veramo-nodejs-tutorial/src/veramo/setup.js'
 
+
 async function createVC() {
   let identifier;
-  
   try {
     // Attempt to get the identifier by alias
     identifier = await agent.didManagerGetByAlias({ alias: 'default' });
