@@ -9,15 +9,9 @@
         <nav class="flex-grow">
           <ul class="flex space-x-5 text-lg font-medium items-center">
             <!-- Navigation links -->
-            <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
-            <li><NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink></li>
-            <li><NuxtLink to="/generate" class="text-gray-600 hover:text-blue-600 transition duration-300">Generate</NuxtLink></li>
-            <li>
-              <NuxtLink @click="signMessage" class="text-gray-600 hover:text-blue-600 transition duration-300">Sign DEBUG</NuxtLink>
-            </li>
-            <li>
-              <NuxtLink @click="useMasca" class="text-gray-600 hover:text-blue-600 transition duration-300">Connect to Masca DEBUG</NuxtLink>
-            </li>
+            <li><RouterLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</RouterLink></li>
+            <li><RouterLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</RouterLink></li>
+             <!-- <li><NuxtLink to="/generate" class="text-gray-600 hover:text-blue-600 transition duration-300">Generate</NuxtLink></li> -->
           </ul>
         </nav>
         <div class="flex items-center space-x-4">
@@ -48,6 +42,7 @@ import { ref, onMounted } from 'vue';
 import { useFetch } from '#app';
 import { Button } from '@/components/ui/button';
 import { enableMasca } from '@blockchain-lab-um/masca-connector';
+import { Cookie } from 'lucide-vue-next';
 
 const account = ref('');
 const isAuthenticated = ref(false);
@@ -66,20 +61,7 @@ async function connectWallet() {
   }
 }
 
-// Function to use Masca
-async function useMasca() {
-  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-  try {
-    const enableResult = await enableMasca(accounts[0], {
-      snapId: 'npm:@blockchain-lab-um/masca', // Defaults to `npm:@blockchain-lab-um/masca`
-      version: '1.2.2', // Defaults to the latest released version
-      supportedMethods: ['did:polygonid', 'did:pkh'], // Defaults to all available methods
-    });
-    console.log('enableResult', enableResult);
-  } catch (error) {
-    console.log(error);
-  }
-}
+// on
 
 // Function to sign a message
 async function signMessage(address) {
@@ -107,7 +89,10 @@ async function signMessage(address) {
 
 // Check authentication status on mounted
 onMounted(async () => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('authToken'); 
+  // const token = useCookie('__session').value; // OP-this returns undefined, need to check why tho 
+  console.log("token is ", token)
+
   if (token) {
     try {
       const { data } = await useFetch('/api/login', {
@@ -115,9 +100,10 @@ onMounted(async () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("this is the data from be: ", data)
       if (data.value.token) {
         isAuthenticated.value = true;
-        account.value = data.value.address; // Assuming your backend sends the address
+        account.value = data.value.address; // Checking the two values
       }
     } catch (error) {
       console.error('Not authenticated:', error);
@@ -125,6 +111,21 @@ onMounted(async () => {
       localStorage.removeItem('authToken');
     }
   }
+  //token is 
+  // else{
+  //   //reuse previous connection, only if metamask wallet is connected
+  //   try {
+  //   const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+  //   console.log('Connected', accounts[0]);
+  //   // await signMessage(accounts[0]);
+  //   account.value = accounts[0];
+  //   isAuthenticated.value = true; //this might be bad
+  // } catch (error) {
+  //   console.error(error);
+  // }
+  // }
+
+  // account = await window.ethereum.request({ method: "eth_requestAccounts" })[0];
 });
 </script>
 

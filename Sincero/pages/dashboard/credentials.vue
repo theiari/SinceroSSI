@@ -1,228 +1,335 @@
-<script language="ts">
+<template>
+  <a class="block mb-3 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <div class="relative flex justify-between mb-1 items-center">
+      <div class="flex items-center">
+        <h5 class="text-2xl p-3 font-bold tracking-tight text-gray-900 dark:text-white">Verifiable Credentials</h5>
+        <Toaster />
+        <Dialog>
+          <DialogTrigger>
+            <Button class="flex items-center justify-center mx-2">
+              New credential
+              <Icon name="ant-design:plus-square-outlined" class="mx-0.5" size="24px" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent class="sm:max-w-[525px]">
+            <DialogHeader>
+              <DialogTitle>Create a new Verifiable Credential</DialogTitle>
+              <DialogDescription>
+                Please provide the necessary information
+              </DialogDescription>
+            </DialogHeader>
+            <div class="grid gap-4 py-4">
+              <div class="items-center gap-4">
+                <RadioGroup v-model="form.credentialSubject.certification" defaultValue="exam">
+                  <div class="flex justify-center">
+                    <div class="flex items-center space-x-2 mx-3">
+                      <RadioGroupItem id="option-one" value="exam" />
+                      <Label for="option-one">Exam</Label>
+                    </div>
+                    <div class="flex items-center space-x-2 mx-3">
+                      <RadioGroupItem id="option-two" value="degree" />
+                      <Label for="option-two">Degree</Label>
+                    </div>
+                    <div class="flex items-center space-x-2 mx-3">
+                      <RadioGroupItem id="option-three" value="multiple" />
+                      <Label for="option-three">Multiple</Label>
+                    </div>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div class="grid grid-cols-4 items-center gap-4 mr-5"></div>
+              <div class="grid grid-cols-4 items-center gap-2">
+                <Label for="title" class="col-span-1"> Title </Label>
+                <Input id="title" v-model="form.credentialSubject.title" class="col-span-1" />
+                <Label for="issuer" class="text-right col-span-1"> DID </Label>
+                <Input id="issuer" v-model="form.issuer" class="col-span-1 truncate" disabled placeholder="myEthereumAddress"/>
+              </div>
+              <div class="grid grid-cols-4 items-center gap-2">
+                <Label for="grade" class="col-span-1"> Grade </Label>
+                <Input id="grade" type="number" v-model="form.credentialSubject.grade" class="col-span-1" />
+                <Label for="max-grade" class="text-right col-span-1"> Max grade </Label>
+                <Input id="max-grade" type="number" v-model="form.credentialSubject.maxGrade" class="col-span-1" />
+              </div>
+            </div>
+            <DialogClose as-child>
+              <Button @click="onSubmit()">
+                Create Verifiable Credential <Icon name="ant-design:send-outlined" size="20px" class="mx-0.5" />
+              </Button>
+            </DialogClose>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+
+    <div :class="['relative', 'overflow-auto']" style="max-height: 300px">
+      <div v-if="isLoading" class="space-y-4">
+        <div v-for="i in 3" :key="i" class="animate-pulse">
+          <div class="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+          <div class="h-4 bg-gray-300 rounded w-1/2"></div>
+        </div>
+      </div>
+      <myTable v-else></myTable>
+    </div>
+  </a>
+</template>
+
+<script lang="ts">
+import { ref, reactive, onMounted } from 'vue';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { required, numeric } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { h } from "vue";
-import { Masca, enableMasca } from '@blockchain-lab-um/masca-connector';
-const { toast } = useToast();
-
-
+import { Masca, enableMasca, isSuccess, type Result } from '@blockchain-lab-um/masca-connector';
 export default {
- data() {
-  return {
-   form: {
+    setup() {
+    // const { data, error } = useAsyncData('getJwt', () => $fetch('/api/get-jwt'));
+    // const jonathan = computed(() => data.value?.token || '');
+    // const errorMessage = computed(() => error.value ? error.value.message : '');
+    const { toast } = useToast();
+    const isLoading = ref(true);
+    const isDialogOpen = ref(false);
+
+
+      // TODO CORRECT THE FORM FIELDS AND THEN CREATE A BLOCKCHAIN DATA SCHEMA FOR THE CREDENTIAL
+
+    let form = reactive({
+  // W3C standard fields
+  "@context": ["https://www.w3.org/2018/credentials/v1"],
+  type: ["VerifiableCredential", "ExamCredential"],
+
+  // Issuer and issuance details
+  issuer: "",
+  issuanceDate: "",
+
+  // CredentialSubject that holds the main attributes
+  credentialSubject: {
     certification: "",
     title: "",
     grade: "",
-    maxGrade: "",
-    DID: "",
-   },
-  selectedValue: ref("5"),
-  };
- },
- validations() {
-  return {
-   form: {
-    certification: { required },
-    title: { required },
-    grade: { required, numeric },
-    maxGrade: { required, numeric },
-    DID: { numeric },
-   },
-  };
- },
- methods: {
-  clicked() {
-   console.log("clicked");
-   toast({
-      title: "Error",
-      message: "Something went wrong, please check the field and try again",
-      actions: [
-       h(
-        Button,
-        {
-         onClick: () => {
-          console.log("clicked");
-         },
+    maxGrade: ""
+  },
+
+  // Credential schema details
+  credentialSchema: {
+     type: "", 
+     version: "0.1",
+     ipfsLink: 'ipfs://abc123',//TODO this should be a real link to the schema
+      //maybe it's also possible to add smart contract explorer link
+    },
+
+  // Proof object (to be filled after signing the credential)
+  proof: {
+    type: "",
+    jwt: "",
+  }
+});
+    const selectedValue = ref("5");
+
+    onMounted(() => {
+      console.log("Component mounted, starting to load credentials");
+      loadCredentials();
+      // console.log("jwt token is", jonathan.value)
+    });
+
+    const loadCredentials = async () => {
+      console.log("Loading credentials...");
+      if (typeof window.ethereum === 'undefined') {
+        console.error('Ethereum provider (MetaMask) is not available');
+        isLoading.value = false;
+        toast({
+          title: "Error",
+          description: "Ethereum provider (MetaMask) is not available",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        if (!Array.isArray(accounts) || accounts.length === 0) {
+          throw new Error('No accounts returned from Ethereum provider');
+        }
+        const address = accounts[0];
+        if (typeof address !== 'string') {
+          throw new Error('Invalid address returned from Ethereum provider');
+        }
+        // Set the DID field with the current MetaMask address
+        form.issuer = "did:ethr:"+address;
+
+        // The commented code below is where you would integrate Masca and fetch credentials
+        // console.log("Enabling Masca...");
+        // const enableResult = await enableMasca(address, {
+        //   snapId: 'npm:@blockchain-lab-um/masca',
+        //   version: '1.2.2',
+        //   supportedMethods: ['did:polygonid', 'did:pkh'],
+        // });
+
+        // if (isSuccess(enableResult)) {
+        //   const api = enableResult.data;
+        //   const MascaApi = api.getMascaApi();
+        //   console.log("Querying credentials...");
+        //   const queryResult = await MascaApi.queryCredentials();
+
+        //   if (isSuccess(queryResult)) {
+        //     console.log('The queried credentials are the following:', queryResult.data);
+        //     // You might want to store this data in a reactive variable if needed
+        //   } else {
+        //     throw new Error('Error querying credentials: ' + queryResult.error);
+        //   }
+        // } else {
+        //   throw new Error('Error enabling Masca: ' + enableResult.error);
+        // }
+      } catch (error) {
+        console.error('An error occurred:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load credentials. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        console.log("Finished loading credentials");
+        isLoading.value = false;
+      }
+    };
+
+    const openDialog = () => {
+      isDialogOpen.value = true;
+    };
+
+    const onSubmit = async () => {
+      const $v = useVuelidate({
+        form: {
+          issuer: { required },
+          credentialSubject: {
+            title: { required },
+            grade: { required, numeric },
+            maxGrade: { required, numeric },
+          },
         },
-        { default: () => "Retry" }
-       ),
-      ],
-     });
+        
+      }, { form });
+
+      $v.value.$touch();
+      if ($v.value.$invalid) {
+        toast({
+          title: "Error",
+          description: "Please check the form fields and try again",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      try {
+        const response = await $fetch("/api/createJWT_VC", {
+          method: "POST",
+          body: form,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response?.code === 200) {
+          toast({
+            title: 'Success',
+            description: 'Data sent successfully',
+            variant: 'default',
+          });
+          isDialogOpen.value = false;
+        } else {
+          throw new Error('API returned non-200 status code');
+        }
+
+        window.ethereum.request({ method: "eth_requestAccounts" })
+    .then((accounts: unknown) => {
+      if (!Array.isArray(accounts) || accounts.length === 0) {
+        throw new Error('No accounts returned from Ethereum provider');
+      }
+      const address = accounts[0];
+      if (typeof address !== 'string') {
+        throw new Error('Invalid address returned from Ethereum provider');
+      }
+      console.log('Ethereum Address:', address);
+
+      return enableMasca(address, {
+        snapId: 'npm:@blockchain-lab-um/masca',
+        version: '1.2.2',
+        supportedMethods: ['did:polygonid', 'did:pkh'],
+      });
+    })
+    .then((enableResult: Result<Masca>) => {
+      if (isSuccess(enableResult)) {
+        const api = enableResult.data;
+        console.log('Masca API:', api);
+        form.issuanceDate = new Date().toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+        try{
+          useNuxtApp()
+          }
+          catch(e){
+            console.log(e)
+          }
+          // console.log("this is the token", token)
+          
+        // form.proof.jwt = useFetch('/api/get-jwt')
+        console.log("and this is the other token",  form.proof.jwt )
+        const credentialString = JSON.stringify(form);
+        return api.getMascaApi().saveCredential(credentialString, {
+          store: 'snap',
+        }).then(() => api.getMascaApi());
+      } else {
+        throw new Error('Error enabling Masca: ' + enableResult.error);
+      }
+    })
+
+
+
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        toast({
+          title: 'Something went wrong.',
+          description: 'Please check the fields and try again.',
+          variant: 'destructive',
+        });
+      }
+    };
+
+    return {
+      isLoading,
+      isDialogOpen,
+      form,
+      selectedValue,
+      loadCredentials,
+      openDialog,
+      onSubmit,
+    };
   },
-  async onSubmit() {
-   const $v = useVuelidate(this.validation(), this.form);
-   console.log("plain $v", $v);
 
-   console.log("Form submitted:", this.form);
-
-   const data = await $fetch("/api/createJWT_VC", {
-    method: "POST",
-    body: this.form,
-    headers: {
-     "Content-Type": "application/json",
-    },
-   }).then((res) => {
-    if (res.code === 200) {
-      toast({
-        title: 'Success',
-        description: 'Data sent successfully',
-        variant: 'success',
-      });
-    } else {
-
-     toast({
-        title: 'Something went wrong.',
-        description: 'Please check the fields and try again',
-        variant: 'destructive',
-      });
+   getJwtToken: async () => {
+    try {
+      const response = await fetch("/api/get-jwt");
+      if (response.ok) {
+        const data = await response.json();
+        return data.token;
+      } else {
+        throw new Error("Failed to fetch JWT token");
+      }
+    } catch (error) {
+      console.error("Error fetching JWT token:", error);
+      throw error;
     }
-   });
-  },
+  }
 
-  validation() {
-   return {
-    form: {
-     certification: { required },
-     title: { required },
-     grade: { required, numeric },
-     maxGrade: { required, numeric },
-     DID: { numeric },
-    },
-   };
-  },
- },
 };
 
 definePageMeta({
- layout: "dashboard",
+  layout: "dashboard",
 });
 </script>
-<template>
-  
- <a
-  class="block mb-3 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
- >
-  <div class="relative flex justify-between mb-1 items-center">
-   <div class="flex items-center">
-    <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Connections</h5>
-    <Toaster />
-    <Dialog>
-     <DialogTrigger>
-      <Button class="flex items-center justify-center mx-2">
-       New credential
-       <Icon name="ant-design:plus-square-outlined" class="mx-0.5" size="24px" />
-      </Button>
-     </DialogTrigger>
-     <DialogContent class="sm:max-w-[625px]">
-      <DialogHeader>
-       <DialogTitle>Create a new credential</DialogTitle>
-       <DialogDescription>
-        In this tab it's possible to create a new invitation to connect two, or multiple nodes.
-       </DialogDescription>
-      </DialogHeader>
-      <div class="grid gap-4 py-4">
-       <div class="items-center gap-4">
-        <RadioGroup v-model="form.certification" defaultValue="exam">
-         <div class="flex justify-center">
-          <div class="flex items-center space-x-2 mx-3">
-           <RadioGroupItem id="option-one" value="exam" />
-           <Label for="option-one">Exam</Label>
-          </div>
-          <div class="flex items-center space-x-2 mx-3">
-           <RadioGroupItem id="option-two" value="degree" />
-           <Label for="option-two">Degree</Label>
-          </div>
-          <div class="flex items-center space-x-2 mx-3">
-           <RadioGroupItem id="option-three" value="multiple" />
-           <Label for="option-three">Multiple</Label>
-          </div>
-         </div>
-        </RadioGroup>
-       </div>
-
-       <div class="grid grid-cols-4 items-center gap-4 mr-5"></div>
-       <div class="grid grid-cols-4 items-center gap-2">
-        <Label for="title" class="col-span-1"> Title </Label>
-        <Input id="title" v-model="form.title" class="col-span-1" />
-        <Label for="max-grade" class="text-right col-span-1"> ?DID? </Label>
-        <Input id="max-grade" v-model="form.DID" class="col-span-1" />
-       </div>
-       <div class="grid grid-cols-4 items-center gap-2">
-        <Label for="grade" class="col-span-1"> Grade </Label>
-        <Input id="grade" type="number" v-model="form.grade" class="col-span-1" />
-        <Label for="max-grade" class="text-right col-span-1"> Max grade </Label>
-        <Input id="max-grade" type="number" v-model="form.maxGrade" class="col-span-1" />
-       </div>
-      </div>
-      <DialogClose as-child>
-       <Button @click="onSubmit()">
-        Create Verifiable Credential <Icon name="ant-design:send-outlined" size="20px" class="mx-0.5" />
-       </Button>
-      </DialogClose>
-     </DialogContent>
-    </Dialog>
-
-    <DropdownMenu class="mx-2 flex items-end">
-     <DropdownMenuTrigger as-child>
-      <Button variant="outline">
-       {{ selectedValue }}
-       <Icon name="ant-design:down-outlined" />
-      </Button>
-     </DropdownMenuTrigger>
-     <DropdownMenuContent class="w-18">
-      <DropdownMenuRadioGroup v-model="selectedValue">
-       <DropdownMenuRadioItem value="5">5</DropdownMenuRadioItem>
-       <DropdownMenuRadioItem value="10">10</DropdownMenuRadioItem>
-       <DropdownMenuRadioItem value="30">30</DropdownMenuRadioItem>
-      </DropdownMenuRadioGroup>
-     </DropdownMenuContent>
-    </DropdownMenu>
-   </div>
-
-   <form class="flex items-end">
-    <label for="default-search" class="text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-
-    <div class="relative flex items-end">
-     <input
-      type="search"
-      id="default-search"
-      class="block w-full p-2.5 pe-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      placeholder="search here"
-      required
-     />
-    </div>
-   </form>
-
-   <div
-    id="static-modal"
-    data-modal-backdrop="static"
-    tabindex="-1"
-    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
-   ></div>
-  </div>
-
-  <div :class="['relative', 'overflow-auto']" style="max-height: 300px">
-   <myTable> </myTable>
-  </div>
- </a>
-</template>
-
-<style scoped>
-.my-button {
- background-color: #c1c1c1;
- border-radius: 1rem;
- text-align: center;
- padding: 5px;
-}
-.toast {
-  background-color: #4caf50; /* Green */
-  color: white;
-}
-</style>
-
-
-
-
 

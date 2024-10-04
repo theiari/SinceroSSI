@@ -8,12 +8,12 @@
        Welcome to <span class="text-blue-500">Sincero</span>
       </h1>
       <p class="mt-4 text-lg md:text-xl lg:text-2xl max-w-2xl mx-auto">
-       An Hyperledger Aries based decentralized identity platform
+       A Self Sovereign Identity identity platform
       </p>
       <button
        class="mt-8 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full hover:bg-blue-500 transition duration-300 transform hover:scale-105"
       >
-       <NuxtLink to="/generate">Generate personal DID</NuxtLink>
+       <NuxtLink to="/dashboard">Go to the dashboard</NuxtLink>
         </button>
      </div>
     </div>
@@ -32,4 +32,5 @@ function getLocalStorage(key) {
     console.log(localStorage.getItem(key), "clicked!")
  return localStorage.getItem(key+1);
 }
+
 </script>

@@ -17,9 +17,9 @@ export default defineEventHandler(async (event) => {
   const resolver = new Resolver(getResolver({infuraProjectId: useRuntimeConfig().public.infuraSecret}));
 
   try {
-    const decoded = await decodeJWT(token);
+    // const decoded = await decodeJWT(token);
     
-    return { verified };
+    return { token: token };
   }
    catch (error) {
     throw createError({ statusCode: 401, statusMessage: 'No token provided' });

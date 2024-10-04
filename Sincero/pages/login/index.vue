@@ -9,7 +9,7 @@
       @click="connectMetaMask"
       class="bg-indigo-600 text-white py-3 px-6 rounded-full shadow-md hover:bg-indigo-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500"
      >
-      Connect with MetaMask
+      Sign a message with MetaMask
      </button>
     </div>
    </section>

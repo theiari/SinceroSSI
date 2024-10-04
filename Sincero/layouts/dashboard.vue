@@ -9,18 +9,13 @@
     <nav class="flex-grow">
      <ul class="flex space-x-5 text-lg font-medium items-center">
       <!-- Navigation links -->
-      <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
       <li>
        <NuxtLink to="/dashboard" class="text-gray-600 hover:text-blue-600 transition duration-300">Dashboard</NuxtLink>
       </li>
-      <li>
+      <li><NuxtLink to="/about" class="text-gray-600 hover:text-blue-600 transition duration-300">About</NuxtLink></li>
+      <!-- <li>
        <NuxtLink to="/generate" class="text-gray-600 hover:text-blue-600 transition duration-300">Generate</NuxtLink>
-      </li>
-      <li>
-       <NuxtLink @click="signMessage" class="text-gray-600 hover:text-blue-600 transition duration-300"
-        >Sign DEBUG</NuxtLink
-       >
-      </li>
+      </li> -->
      </ul>
     </nav>
     <div class="flex items-center space-x-4">
@@ -32,46 +27,51 @@
    <aside class="w-46 bg-gray-200 p-2" aria-label="Sidebar">
     <ul>
      <li class="menu-item">
-      <NuxtLink to="/dashboard" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-       <Icon name="ant-design:dashboard-outlined" size="20px" class="mx-0.5" />Dashboard</NuxtLink
+      <RouterLink to="/dashboard" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+       <Icon name="ant-design:dashboard-outlined" size="20px" class="mx-0.5" />Dashboard</RouterLink
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/dashboard/configuration" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-       <Icon name="ant-design:form-outlined" size="20px" class="mx-0.5" />Configuration</NuxtLink
+      <RouterLink to="/dashboard/configuration" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+       <Icon name="ant-design:form-outlined" size="20px" class="mx-0.5" />Configuration</RouterLink
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/dashboard/connections" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-       <Icon name="ant-design:usergroup-add-outlined" size="20px" class="mx-0.5" />Connections</NuxtLink
+      <RouterLink to="/dashboard/connections" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+       <Icon name="ant-design:usergroup-add-outlined" size="20px" class="mx-0.5" />Connections</RouterLink
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/dashboard/credentials" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+      <RouterLink to="/dashboard/credentials" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
        <Icon name="ant-design:audit-outlined" size="20px" class="mx-0.5" />Credentials
-      </NuxtLink>
+      </RouterLink>
      </li>
      <li class="menu-item">
-      <NuxtLink to="/dashboard/issuance" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-       <Icon name="ant-design:delivered-procedure-outlined" size="20px" class="mx-0.5" />Issuance</NuxtLink
+      <RouterLink to="/dashboard/issuance" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+       <Icon name="ant-design:delivered-procedure-outlined" size="20px" class="mx-0.5" />Issuance</RouterLink
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/dashboard/messages" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-       <Icon name="ant-design:message-outlined" size="20px" class="mx-0.5" />Messages</NuxtLink
+      <RouterLink to="/dashboard/messages" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+       <Icon name="ant-design:message-outlined" size="20px" class="mx-0.5" />Messages</RouterLink
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/dashboard/verification" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-       <Icon name="ant-design:security-scan-outlined" size="20px" class="mx-0.5" />Verification</NuxtLink
+      <RouterLink to="/dashboard/verification" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+       <Icon name="ant-design:security-scan-outlined" size="20px" class="mx-0.5" />Verification</RouterLink
       >
      </li>
      <li class="menu-item">
-      <NuxtLink to="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
-       <Icon name="ant-design:info-circle-outlined" size="20px" class="mx-0.5" />About</NuxtLink
+      <RouterLink to="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-300">
+       <Icon name="ant-design:info-circle-outlined" size="20px" class="mx-0.5" />About</RouterLink
       >
      </li>
      <li class="menu-item">
+      <RouterLink to="index" @click="goHome" class="block py-2 px-4 text-gray-700 hover:bg-red-500 hover:text-white">
+       <Icon name="ant-design:logout-outlined" size="20px" class="mx-0.5" />Logout</RouterLink
+      >
+     </li>
+     <!-- <li class="menu-item">
       <NuxtLink
        @click="goHome"
        class="block py-2 px-4 text-gray-700 hover:bg-red-500 hover:text-white transition-colors duration-300"
@@ -79,7 +79,7 @@
        <Icon name="ant-design:logout-outlined" size="20px" class="mx-0.5" />
        Logout
       </NuxtLink>
-     </li>
+     </li> -->
     </ul>
    </aside>
 
@@ -104,10 +104,18 @@
 </style>
 
 <script setup>
+import { toast } from "@/components/ui/toast/use-toast";
+
 
 async function goHome(){
  //invalidate the session
+//  toast({
+//           title: "Logged Out!",
+//           variant: "default",
+//         });
+
   await $fetch("/api/logout");
+  
   navigateTo("/");
-}
+      }
 </script>

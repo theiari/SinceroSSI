@@ -21,6 +21,11 @@ export default defineNuxtConfig({
       databaseFile: process.env.DATABASE_FILE,
     },
   },
+  security:{
+    headers:{
+      contentSecurityPolicy: false
+    }
+  },
 
   compatibilityDate: '2024-07-23',
 })

@@ -1,13 +1,12 @@
 import { defineEventHandler, readBody, H3Event } from 'h3';
 import Web3 from 'web3';
-import { createJWT, ES256KSigner, hexToBytes, decodeJWT, verifyJWT } from 'did-jwt';
 import { Resolver } from 'did-resolver';
 import { getResolver } from 'ethr-did-resolver';
 import { serialize } from 'cookie';  // Import the cookie package
 import { createVerifiableCredentialJwt, type Issuer, type JwtCredentialPayload } from 'did-jwt-vc'
 import { EthrDID } from 'ethr-did'
-import { validate } from 'vee-validate';
 import { agent } from '../../services/veramo-nodejs-tutorial/src/veramo/setup.js'
+
 
 
 async function createVC() {
@@ -63,7 +62,7 @@ const validateData = (title:string, grade:number, maxGrade:number, DID:string, c
   const validTypes = ["exam", "degree", "multiple"];
 
   if (typeof title !== 'string'|| title.length < 3 || title.length > 100) {
-    console.log("title is not valid");
+    console.log("title is not valid: ", title);
     return false;
   }
   if (typeof grade !== 'number' || isNaN(grade) || grade < 0) {
@@ -73,10 +72,10 @@ const validateData = (title:string, grade:number, maxGrade:number, DID:string, c
     console.log("maxGrade is not valid");
     return false;
   }
-  if (typeof DID !== 'string' || !DID.trim()) {
-    console.log("DID is not valid");
-    return false;
-  }
+  // if (typeof DID !== 'string' || !DID.trim()) {
+  //   console.log("DID is not valid");
+  //   return false;
+  // }
   if (!validTypes.includes(certification) || typeof certification !== 'string') {
     console.log("certification type is not valid");
     return false;
@@ -100,10 +99,10 @@ export default defineEventHandler(async (event: H3Event) => {
 
   // Read the request body
   const body = await readBody(event);
-  const { title, grade, maxGrade, DID, certification  } = body;
+  const { title, grade, maxGrade, DID, certification, credentialSubject, signer  } = body;
 
   //todo data validation
-  if (!validateData(title, grade, maxGrade, DID, certification)){
+  if (!validateData(credentialSubject.title, credentialSubject.grade, credentialSubject.maxGrade, DID, credentialSubject.certification)){
     return {
       message: 'Data validation failed',
       code: 400,
@@ -111,6 +110,8 @@ export default defineEventHandler(async (event: H3Event) => {
     }
   }
   // Create the VC
+  const token = getCookie(event, '__session');
+  console.log("the token is this one: ", token);
   const vc: JwtCredentialPayload = {
     sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
     nbf: 1562950282,
@@ -118,23 +119,87 @@ export default defineEventHandler(async (event: H3Event) => {
       '@context': ['https://www.w3.org/2018/credentials/v1'],
       type: ['VerifiableCredential'],
       credentialSubject: {
+        type: credentialSubject.certification,
+        data: {
+          title: credentialSubject.title,
+          grade: credentialSubject.grade,
+          maxGrade: credentialSubject.maxGrade,
+          extra: "did:ethr:"+DID,
+          
+        }
+      },
+      proof: {
+        type: 'JwtProof2020',
+        jwt: token
+    }
+    }
+  }
+  const vc1: JwtCredentialPayload = {
+    sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
+    nbf: 1562950282,
+    vc: {
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      issuer: body.issuer,
+      issuanceDate: body.issuanceDate,
+      type: ['VerifiableCredential'],
+      credentialSubject: {
         type: certification,
         data: {
           title: title,
           grade: grade,
           maxGrade: maxGrade,
-          extra: DID,
+          extra: "did:ethr:"+DID,
         }
+      },
+      proof: {
+        type: 'JwtProof2020',
+        jwt: token
+    },
+    credentialSchema:{
+      type: 'JsonSchemaValidator2020',
+      version: '1.0.0',
+      ipfsLink: 'ipfs://abc123',//TODO this should be a real link to the schema
+      //maybe it's also possible to add smart contract explorer link
+      schema: {
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            minLength: 3,
+            maxLength: 100
+          },
+          grade: {
+            type: 'number',
+            minimum: 0
+          },
+          maxGrade: {
+            type: 'number',
+            minimum: grade
+          },
+          extra: {
+            type: 'string',
+            format: 'uri'
+          }
+        },
+        required: ['title', 'grade', 'maxGrade', 'extra']
       }
     }
+    }
   }
-  const vcJwt = await createVerifiableCredentialJwt(vc, issuer);
-  const veramoVC = await createVC();
+  const vcJwt = await createVerifiableCredentialJwt(vc1, issuer);
+  // const veramoVC = await createVC();
+  // const veramoVC = await agent.createVerifiableCredential({
+  //   credential: {
+  //     issuer:  body.issuer,
+  //     credentialSubject: body.credentialSubject
+  //     },
+  //   proofFormat: 'jwt',
+  // });
   return {
     message: 'ok',
     jwt: vcJwt,
     code: 200,
-    veramoVC: veramoVC,
+    // veramoVC: veramoVC,
     
   }
   
