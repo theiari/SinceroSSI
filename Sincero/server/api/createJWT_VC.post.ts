@@ -78,6 +78,7 @@ const validateData = (title:string, grade:number, maxGrade:number, DID:string, c
   // }
   if (!validTypes.includes(certification) || typeof certification !== 'string') {
     console.log("certification type is not valid");
+    console.log(certification);
     return false;
   }
   
@@ -99,10 +100,10 @@ export default defineEventHandler(async (event: H3Event) => {
 
   // Read the request body
   const body = await readBody(event);
-  const { title, grade, maxGrade, DID, certification, credentialSubject, signer  } = body;
+  const { credentialSubject, signer, issuanceDate  } = body;
 
   //todo data validation
-  if (!validateData(credentialSubject.title, credentialSubject.grade, credentialSubject.maxGrade, DID, credentialSubject.certification)){
+  if (!validateData(credentialSubject.title, credentialSubject.grade, credentialSubject.maxGrade, signer, credentialSubject.certification)){
     return {
       message: 'Data validation failed',
       code: 400,
@@ -112,43 +113,23 @@ export default defineEventHandler(async (event: H3Event) => {
   // Create the VC
   const token = getCookie(event, '__session');
   console.log("the token is this one: ", token);
-  const vc: JwtCredentialPayload = {
-    sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
-    nbf: 1562950282,
-    vc: {
-      '@context': ['https://www.w3.org/2018/credentials/v1'],
-      type: ['VerifiableCredential'],
-      credentialSubject: {
-        type: credentialSubject.certification,
-        data: {
-          title: credentialSubject.title,
-          grade: credentialSubject.grade,
-          maxGrade: credentialSubject.maxGrade,
-          extra: "did:ethr:"+DID,
-          
-        }
-      },
-      proof: {
-        type: 'JwtProof2020',
-        jwt: token
-    }
-    }
-  }
+
   const vc1: JwtCredentialPayload = {
     sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
     nbf: 1562950282,
     vc: {
       '@context': ['https://www.w3.org/2018/credentials/v1'],
       issuer: body.issuer,
-      issuanceDate: body.issuanceDate,
+      issuanceDate: issuanceDate,
       type: ['VerifiableCredential'],
       credentialSubject: {
-        type: certification,
+        type: credentialSubject.type,
         data: {
-          title: title,
-          grade: grade,
-          maxGrade: maxGrade,
-          extra: "did:ethr:"+DID,
+          certification: credentialSubject.certification,
+          title: credentialSubject.title,
+          grade: credentialSubject.grade,
+          maxGrade: credentialSubject.maxGrade,
+          // extra: "did:ethr:"+signer,//not relevant for now, but might be useful in the future
         }
       },
       proof: {
@@ -163,6 +144,10 @@ export default defineEventHandler(async (event: H3Event) => {
       schema: {
         type: 'object',
         properties: {
+          certification:{
+            type: 'string',
+            enum: ['exam', 'degree', 'multiple']
+          },
           title: {
             type: 'string',
             minLength: 3,
@@ -174,14 +159,14 @@ export default defineEventHandler(async (event: H3Event) => {
           },
           maxGrade: {
             type: 'number',
-            minimum: grade
+            minimum: credentialSubject.grade
           },
-          extra: {
+          extra: { //not essential, but might be useful
             type: 'string',
             format: 'uri'
           }
         },
-        required: ['title', 'grade', 'maxGrade', 'extra']
+        required: ['certification', 'title', 'grade', 'maxGrade']
       }
     }
     }
