@@ -1,11 +1,11 @@
 import { defineEventHandler, readBody, H3Event } from 'h3';
-import Web3 from 'web3';
+
 import { Resolver } from 'did-resolver';
 import { getResolver } from 'ethr-did-resolver';
 import { serialize } from 'cookie';  // Import the cookie package
 import { createVerifiableCredentialJwt, type Issuer, type JwtCredentialPayload } from 'did-jwt-vc'
 import { EthrDID } from 'ethr-did'
-import { agent } from '../../services/veramo-nodejs-tutorial/src/veramo/setup.js'
+import { agent } from '../../services/veramo-agent/src/veramo/setup.js'
 
 
 
@@ -46,8 +46,7 @@ async function createVC() {
 
 //createVC().catch(console.log)
 // Initialize web3
-const web3 = new Web3();
-const resolver = new Resolver({ ...getResolver({ infuraProjectId: (useRuntimeConfig().public.infuraSecret) }) });
+
 
 //TODO all these magic strings should be in the .env file, right now are syntehtic stuff
 const issuer = new EthrDID({
