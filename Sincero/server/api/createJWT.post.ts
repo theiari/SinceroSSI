@@ -1,5 +1,4 @@
 import { defineEventHandler, readBody, H3Event } from 'h3';
-import Web3 from 'web3';
 import { Resolver } from 'did-resolver';
 import { getResolver } from 'ethr-did-resolver';
 import { createVerifiableCredentialJwt, type Issuer, type JwtCredentialPayload } from 'did-jwt-vc'

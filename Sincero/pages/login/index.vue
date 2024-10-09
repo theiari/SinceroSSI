@@ -29,19 +29,34 @@ const connectMetaMask = async () => {
    const web3 = new Web3(window.ethereum);
    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
    const userAccount = accounts[0];
+   let seed = ref('')
    console.log("MetaMask account:", userAccount);
+   
    // Redirect to /dashboard
 
+   
+    await $fetch("/api/getSeed",
+    {
+     method: "post",
+     body: { address: userAccount },
+    }).then(res => {
+         seed = res.seed
+    }
+);
+  
+
    try {
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-    const message = "Please sign this message";
-    const signature = await ethereum.request({ method: "personal_sign", params: [message, accounts[0]] });
+    // const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    
+    const message = "Please sign this message ";
+    const messageSeeded = message + seed; //this should be handled properly as a get request from the backend
+    const signature = await ethereum.request({ method: "personal_sign", params: [messageSeeded, accounts[0]] });
     console.log("Signed", signature);
 
     // send the signature to the backend to verify the user and return a jwt token
     const { body } = await $fetch("/api/submit", {
      method: "post",
-     body: { signature: signature, message: message, address: accounts[0] },
+     body: { signature: signature, message: messageSeeded, address: accounts[0] },
     }); //.then((res));
     //console.log(res);
    } catch (error) {

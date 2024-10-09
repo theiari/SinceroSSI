@@ -49,10 +49,10 @@ async function createVC() {
 
 
 //TODO all these magic strings should be in the .env file, right now are syntehtic stuff
-const issuer = new EthrDID({
-  identifier: '0xf1232f840f3ad7d23fcdaa84d6c66dac24efb198',
-  privateKey: 'd8b595680851765f38ea5405129244ba3cbad84467d190859f4c8b20c1ff6c75'
-}) as Issuer
+// const issuer = new EthrDID({
+//   identifier: '0xf1232f840f3ad7d23fcdaa84d6c66dac24efb198',
+//   privateKey: 'd8b595680851765f38ea5405129244ba3cbad84467d190859f4c8b20c1ff6c75'
+// }) as Issuer
 
 
 //function to check data validity
@@ -114,7 +114,7 @@ export default defineEventHandler(async (event: H3Event) => {
   console.log("the token is this one: ", token);
 
   const vc1: JwtCredentialPayload = {
-    sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
+    // sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
     nbf: 1562950282,
     vc: {
       '@context': ['https://www.w3.org/2018/credentials/v1'],
@@ -170,7 +170,20 @@ export default defineEventHandler(async (event: H3Event) => {
     }
     }
   }
-  const vcJwt = await createVerifiableCredentialJwt(vc1, issuer);
+  let identifier;
+  try {
+    // Attempt to get the identifier by alias
+    identifier = await agent.didManagerGetByAlias({ alias: 'default' });
+  } catch (e) {
+    // Log the error and create a new identifier if the alias is not found
+    console.log(e);
+    console.log("Creating identifier");
+    identifier = await agent.didManagerCreate({ alias: 'default' });
+  } finally {
+    // Ensure the identifier is fetched or created
+    identifier = await agent.didManagerGetByAlias({ alias: 'default' });
+  }
+  const vcJwt = await agent.createVerifiableCredentialJwt(vc1);
   // const veramoVC = await createVC();
   // const veramoVC = await agent.createVerifiableCredential({
   //   credential: {

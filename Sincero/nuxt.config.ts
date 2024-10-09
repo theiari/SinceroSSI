@@ -19,6 +19,7 @@ export default defineNuxtConfig({
       infuraSecret: process.env.INFURA_SECRET,
       kmsSecretKey: process.env.VERAMO_SECRET_KEY,
       databaseFile: process.env.DATABASE_FILE,
+      signatureNonce: process.env.SIGNATURE_NONCE,
     },
   },
   security:{
