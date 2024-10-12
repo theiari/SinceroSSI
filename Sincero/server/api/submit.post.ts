@@ -97,9 +97,11 @@ export default defineEventHandler(async (event) => {
       audience: 'did:ethr:'+body.address,
     })
 
+      console.log("verification response: ", verificationResponse);
   // Return the verification result
 
   return { jwt: jwt,
+
     //  decoded: decodeJWT(jwt), verified:  verificationResponse
 
   } ;

@@ -203,7 +203,7 @@ export default {
      },
     });
     if (response && "jwt" in response) {
-     token.value = response.jwt; // Assign jwt to token
+    token.value = response.jwt as string; // Assign jwt to token
      console.log("JWT hopefully is this one:", token.value);
     } else {
      console.log("JWT not found in the response");
