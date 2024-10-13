@@ -6,42 +6,42 @@ import { serialize } from 'cookie';  // Import the cookie package
 import { createVerifiableCredentialJwt, type Issuer, type JwtCredentialPayload } from 'did-jwt-vc'
 import { EthrDID } from 'ethr-did'
 import { agent } from '../../services/veramo-agent/src/veramo/setup.js'
+import type { CredentialPayload } from '@veramo/core-types';
 
 
+// async function createVC() {
+//   let identifier;
+//   try {
+//     // Attempt to get the identifier by alias
+//     identifier = await agent.didManagerGetByAlias({ alias: 'default' });
+//   } catch (e) {
+//     // Log the error and create a new identifier if the alias is not found
+//     console.log(e);
+//     console.log("Creating identifier");
+//     identifier = await agent.didManagerCreate({ alias: 'default' });
+//   } finally {
+//     // Ensure the identifier is fetched or created
+//     identifier = await agent.didManagerGetByAlias({ alias: 'default' });
+//   }
 
-async function createVC() {
-  let identifier;
-  try {
-    // Attempt to get the identifier by alias
-    identifier = await agent.didManagerGetByAlias({ alias: 'default' });
-  } catch (e) {
-    // Log the error and create a new identifier if the alias is not found
-    console.log(e);
-    console.log("Creating identifier");
-    identifier = await agent.didManagerCreate({ alias: 'default' });
-  } finally {
-    // Ensure the identifier is fetched or created
-    identifier = await agent.didManagerGetByAlias({ alias: 'default' });
-  }
+//   // Create a verifiable credential
+//   const verifiableCredential = await agent.createVerifiableCredential({
+//     credential: {
+//       issuer: { id: identifier.did },
+//       credentialSubject: {
+//         id: 'did:web:example.com',
+//         you: 'Rock',
+//       },
+//     },
+//     proofFormat: 'jwt',
+//   });
 
-  // Create a verifiable credential
-  const verifiableCredential = await agent.createVerifiableCredential({
-    credential: {
-      issuer: { id: identifier.did },
-      credentialSubject: {
-        id: 'did:web:example.com',
-        you: 'Rock',
-      },
-    },
-    proofFormat: 'jwt',
-  });
+//   // Log the newly created credential
+//   console.log('New credential created');
+//   console.log(JSON.stringify(verifiableCredential, null, 2));
 
-  // Log the newly created credential
-  console.log('New credential created');
-  console.log(JSON.stringify(verifiableCredential, null, 2));
-
-  return verifiableCredential;
-}
+//   return verifiableCredential;
+// }
 
 
 //createVC().catch(console.log)
@@ -113,63 +113,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const token = getCookie(event, '__session');
   console.log("the token is this one: ", token);
 
-  const vc1: JwtCredentialPayload = {
-    // sub: 'did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4', //TODO most likely to change this
-    nbf: 1562950282,
-    vc: {
-      '@context': ['https://www.w3.org/2018/credentials/v1'],
-      issuer: body.issuer,
-      issuanceDate: issuanceDate,
-      type: ['VerifiableCredential'],
-      credentialSubject: {
-        type: credentialSubject.type,
-        data: {
-          certification: credentialSubject.certification,
-          title: credentialSubject.title,
-          grade: credentialSubject.grade,
-          maxGrade: credentialSubject.maxGrade,
-          // extra: "did:ethr:"+signer,//not relevant for now, but might be useful in the future
-        }
-      },
-      proof: {
-        type: 'JwtProof2020',
-        jwt: token
-    },
-    credentialSchema:{
-      type: 'JsonSchemaValidator2020',
-      version: '1.0.0',
-      ipfsLink: 'ipfs://abc123',//TODO this should be a real link to the schema
-      //maybe it's also possible to add smart contract explorer link
-      schema: {
-        type: 'object',
-        properties: {
-          certification:{
-            type: 'string',
-            enum: ['exam', 'degree', 'multiple']
-          },
-          title: {
-            type: 'string',
-            minLength: 3,
-            maxLength: 100
-          },
-          grade: {
-            type: 'number',
-            minimum: 0
-          },
-          maxGrade: {
-            type: 'number',
-            minimum: credentialSubject.grade
-          },
-          extra: { //not essential, but might be useful
-            type: 'string',
-            format: 'uri'
-          }
-        },
-        required: ['certification', 'title', 'grade', 'maxGrade']
-      }
-    }
-    }
-  }
+  
   let identifier;
   try {
     // Attempt to get the identifier by alias
@@ -183,7 +127,69 @@ export default defineEventHandler(async (event: H3Event) => {
     // Ensure the identifier is fetched or created
     identifier = await agent.didManagerGetByAlias({ alias: 'default' });
   }
-  const vcJwt = await agent.createVerifiableCredentialJwt(vc1);
+  
+  const vc1: CredentialPayload = {
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: ['VerifiableCredential'],
+    issuer: { id: identifier.did },
+    issuanceDate: issuanceDate,
+    credentialSubject: {
+      id: signer || 'default-subject-id',
+      type: credentialSubject.type || 'default-type',
+      certification: credentialSubject.certification,
+      title: credentialSubject.title,
+      grade: credentialSubject.grade,
+      maxGrade: credentialSubject.maxGrade,
+    },
+    nbf: 1562950282, // Optional non-blocking time
+  
+    // Directly add credential schema as an extension at the top level
+    credentialSchema: {
+      type: 'JsonSchemaValidator2020',
+      version: '1.0.0',
+      id: 'ipfs://abc123',
+      // schema: {
+      //   type: 'object',
+      //   properties: {
+      //     certification: {
+      //       type: 'string',
+      //       enum: ['exam', 'degree', 'multiple'],
+      //     },
+      //     title: {
+      //       type: 'string',
+      //       minLength: 3,
+      //       maxLength: 100,
+      //     },
+      //     grade: {
+      //       type: 'number',
+      //       minimum: 0,
+      //     },
+      //     maxGrade: {
+      //       type: 'number',
+      //       minimum: credentialSubject.grade,
+      //     },
+      //     extra: {
+      //       type: 'string',
+      //       format: 'uri',
+      //     },
+      //   },
+      //   required: ['certification', 'title', 'grade', 'maxGrade'],
+      // },
+    },
+  
+    // Add proof directly at the top level, if necessary
+    proof: {
+      type: 'JwtProof2020',
+      jwt: token || 'default-jwt',
+    },
+  };
+  console.log("the vc is: ", vc1);
+  const vcJwt = await agent.createVerifiableCredential({
+     credential: vc1,
+    proofFormat: 'jwt',
+  })
+   
+  
   // const veramoVC = await createVC();
   // const veramoVC = await agent.createVerifiableCredential({
   //   credential: {

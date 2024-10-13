@@ -91,7 +91,7 @@
 
   <footer class="bg-gray-800 text-gray-400">
    <div class="container mx-auto px-6 py-1 text-center">
-    <p>&copy; Antonino Iaria</p>
+    <p>&copy; Antonino Iaria's Final Thesis ECS - 2024</p>
    </div>
   </footer>
  </div>

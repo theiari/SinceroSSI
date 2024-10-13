@@ -63,13 +63,13 @@
   </div>
 
   <div :class="['relative', 'overflow-auto']" style="max-height: 300px">
-   <div v-if="isLoading" class="space-y-4">
+   <!-- <div v-if="isLoading" class="space-y-4">
     <div v-for="i in 3" :key="i" class="animate-pulse">
      <div class="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
      <div class="h-4 bg-gray-300 rounded w-1/2"></div>
     </div>
-   </div>
-   <myTable v-else></myTable>
+   </div> -->
+   <myTable></myTable>
   </div>
  </a>
 </template>
@@ -81,11 +81,13 @@ import { useToast } from "@/components/ui/toast/use-toast";
 import { required, numeric } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { Masca, enableMasca, isSuccess, type Result } from "@blockchain-lab-um/masca-connector";
+import type { VerifiableCredential } from "@veramo/core";
+export type W3CVerifiableCredential = VerifiableCredential | string
 export default {
  setup() {
-  const token = ref("");
+  var credential: VerifiableCredential = {} as VerifiableCredential;
   const { toast } = useToast();
-  const isLoading = ref(true);
+  // const isLoading = ref(true);
   const isDialogOpen = ref(false);
 
   // TODO CORRECT THE FORM FIELDS AND THEN CREATE A BLOCKCHAIN DATA SCHEMA FOR THE CREDENTIAL
@@ -97,7 +99,7 @@ export default {
 
    // Issuer and issuance details
    issuer: "",
-   issuanceDate: "",
+  issuanceDate: new Date().toISOString(),
 
    // CredentialSubject that holds the main attributes
    credentialSubject: {
@@ -132,7 +134,7 @@ export default {
    console.log("Loading credentials...");
    if (typeof window.ethereum === "undefined") {
     console.error("Ethereum provider (MetaMask) is not available");
-    isLoading.value = false;
+    // isLoading.value = false;
     toast({
      title: "Error",
      description: "Ethereum provider (MetaMask) is not available",
@@ -161,7 +163,7 @@ export default {
     });
    } finally {
     console.log("Finished loading credentials");
-    isLoading.value = false;
+    // isLoading.value = false;
    }
   };
 
@@ -203,8 +205,10 @@ export default {
      },
     });
     if (response && "jwt" in response) {
-    token.value = response.jwt as string; // Assign jwt to token
-     console.log("JWT hopefully is this one:", token.value);
+    
+    // token.value = response.jwt as string; // Assign jwt to token
+    credential = response.jwt as VerifiableCredential;
+     console.log("the backend provided back this jwtVC:", credential);
     } else {
      console.log("JWT not found in the response");
 
@@ -251,14 +255,16 @@ export default {
         minute: "2-digit",
         hour12: false,
        });
-       form.proof.jwt = token.value; // Assign the JWT to the proof object
-       const credentialString = JSON.stringify(form);
+       form.proof.jwt = credential.jwt; // Assign the JWT to the proof object
+      //  const credentialString:W3CVerifiableCredential = JSON.stringify(form); maybe this is not right
+        const credentialString = JSON.stringify(credential);
+       console.log("Credential is ready to be saved:", credentialString);
        return api
         .getMascaApi()
         .saveCredential(credentialString, {
          store: "snap",
         })
-        .then(() => api.getMascaApi());
+        .then(() => api.getMascaApi().verifyData({credential}));
       } else {
        throw new Error("Error enabling Masca: " + enableResult.error);
       }
@@ -274,7 +280,7 @@ export default {
   };
 
   return {
-   isLoading,
+  //  isLoading,
    isDialogOpen,
    form,
    selectedValue,

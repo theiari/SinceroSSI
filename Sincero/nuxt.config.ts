@@ -8,10 +8,10 @@ export default defineNuxtConfig({
     '@formkit/nuxt',
   ],
 
-  formkit: {
-    // Experimental support for auto loading (see note):
-    autoImport: false,
-  },
+  // formkit: {
+  //   // Experimental support for auto loading (see note):
+  //   autoImport: false,
+  // },
 
   runtimeConfig: {
     public: {
