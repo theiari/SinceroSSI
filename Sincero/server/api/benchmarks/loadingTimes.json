@@ -1,0 +1,109 @@
+{
+  "data": [
+    {
+      "timestamp": "2024-10-15T13:01:17.448Z",
+      "apiLoadTime": 8128,
+      "totalLoadTime": 22174
+    },
+    {
+      "timestamp": "2024-10-15T13:03:43.063Z",
+      "apiLoadTime": 16346,
+      "totalLoadTime": 50733
+    },
+    {
+      "timestamp": "2024-10-15T13:05:37.865Z",
+      "apiLoadTime": 19948,
+      "totalLoadTime": 49158
+    },
+    {
+      "timestamp": "2024-10-15T13:07:54.535Z",
+      "apiLoadTime": 16913,
+      "totalLoadTime": 50985
+    },
+    {
+      "timestamp": "2024-10-15T13:11:19.151Z",
+      "apiLoadTime": 16305,
+      "totalLoadTime": 52447
+    },
+    {
+      "timestamp": "2024-10-15T13:11:46.841Z",
+      "apiLoadTime": 7595,
+      "totalLoadTime": 21522
+    },
+    {
+      "timestamp": "2024-10-15T13:18:47.157Z",
+      "apiLoadTime": 15773,
+      "totalLoadTime": 50211
+    },
+    {
+      "timestamp": "2024-10-15T13:22:31.053Z",
+      "apiLoadTime": 17218,
+      "totalLoadTime": 48404
+    },
+    {
+      "timestamp": "2024-10-15T13:29:51.781Z",
+      "apiLoadTime": 16402,
+      "totalLoadTime": 46921
+    },
+    {
+      "timestamp": "2024-10-15T13:30:34.281Z",
+      "apiLoadTime": 12030,
+      "totalLoadTime": 24445
+    },
+    {
+      "timestamp": "2024-10-15T13:36:24.414Z",
+      "apiLoadTime": 24600,
+      "totalLoadTime": 75462
+    },
+    {
+      "timestamp": "2024-10-15T13:36:54.854Z",
+      "apiLoadTime": 7937,
+      "totalLoadTime": 19499
+    },
+    {
+      "timestamp": "2024-10-15T13:38:16.078Z",
+      "apiLoadTime": 16683,
+      "totalLoadTime": 46277
+    },
+    {
+      "timestamp": "2024-10-15T13:39:40.372Z",
+      "apiLoadTime": 20379,
+      "totalLoadTime": 48292
+    },
+    {
+      "timestamp": "2024-10-15T13:40:08.653Z",
+      "apiLoadTime": 8568,
+      "totalLoadTime": 24516
+    },
+    {
+      "timestamp": "2024-10-15T13:41:51.536Z",
+      "apiLoadTime": 24107,
+      "totalLoadTime": 53570
+    },
+    {
+      "timestamp": "2024-10-15T13:42:38.246Z",
+      "apiLoadTime": 8935,
+      "totalLoadTime": 23223
+    },
+    {
+      "timestamp": "2024-10-15T13:44:21.585Z",
+      "apiLoadTime": 16292,
+      "totalLoadTime": 46525
+    },
+    {
+      "timestamp": "2024-10-15T13:48:53.685Z",
+      "apiLoadTime": 17315,
+      "totalLoadTime": 48855
+    },
+    {
+      "timestamp": "2024-10-15T13:49:47.349Z",
+      "apiLoadTime": 9870,
+      "totalLoadTime": 26575
+    },
+    {
+      "timestamp": "2024-10-15T13:52:24.527Z",
+      "apiLoadTime": 20649,
+      "totalLoadTime": 49596
+    }
+  ]
+}
