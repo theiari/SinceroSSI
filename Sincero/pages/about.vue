@@ -8,9 +8,8 @@
      <p class="text-lg text-gray-600 mb-8 text-center"> Designed and developed under the supervision of:</p>
     </div>
     <img src="../logo.svg" class="w-24 mr-4" />
-     <img src="../logo.svg" class="w-24 mr-4" />
-     <img src="../logo.svg" class="w-24 mr-4" />
-     (TODO change these logos)
+     <img src="../logo1.svg" class="w-24 mr-4" />
+     <img src="../logo2.svg" class="w-24 mr-4" />
    </section>
   </main>
  </div>
