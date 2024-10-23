@@ -1,7 +1,9 @@
 # Sincero
 
-Sincero is a sophisticated web application designed to [describe primary function(TODO)]. Built with Nuxt.js and Tailwind CSS, it offers a seamless user experience and efficient development workflow.
+Sincero is a sophisticated web application designed to provide a suitable solution for a self sovereign identity platform. Built with Nuxt.js and Tailwind CSS, it offers a seamless user experience and efficient development workflow.
 
+
+THIS IS AN EARLY PROTOTYPE THAT MAY CONTAIN BUGS AND ERRORS. THIS WORK IS NOT INTENDENT FOR PRODUCTION.
 ## Table of Contents
 
 1. Introduction
